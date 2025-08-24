@@ -18,11 +18,14 @@ const registrationSchema = z.object({
     .regex(/(?=.*[a-zA-Z])(?=.*\d)/, {
       message: "Password must contain at least one letter and one number",
     }),
+  type: z.enum(["admin", "student", "teacher"]).default("student"),
 });
 
 const register = async (req: Request, res: Response) => {
   try {
-    const { username, email, password } = registrationSchema.parse(req.body);
+    const { username, email, password, type } = registrationSchema.parse(
+      req.body
+    );
 
     const existingUserByEmail = await prisma.user.findUnique({
       where: { email },
@@ -43,12 +46,17 @@ const register = async (req: Request, res: Response) => {
     const hash = bcrypt.hashSync(password, 10);
 
     const user = await prisma.user.create({
-      data: { username, email, password: hash },
+      data: { username, email, password: hash, type },
     });
 
     return res.status(200).json({
       success: true,
-      user: { id: user.id, username: user.username, email: user.email },
+      user: {
+        id: user.id,
+        username: user.username,
+        email: user.email,
+        type: user.type,
+      },
     });
   } catch (error) {
     if (error instanceof z.ZodError) {
