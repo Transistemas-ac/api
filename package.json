@@ -4,15 +4,15 @@
   "description": "",
   "main": "index.ts",
   "scripts": {
-    "start": "node dist/index.js",
+    "start": "npm run migrate:deploy && node dist/index.js",
+    "build": "prisma generate && npx tsc",
+    "postinstall": "prisma generate",
+    "migrate:deploy": "prisma migrate deploy",
     "dev": "ts-node-dev --respawn src/index.ts",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "prisma generate && npx tsc",
     "prisma:generate": "prisma generate",
     "prisma:seed": "node prisma/seed.js",
-    "prisma:migrate": "prisma migrate dev --name init",
-    "migrate:deploy": "prisma migrate deploy",
-    "postinstall": "prisma generate"
+    "prisma:migrate": "prisma migrate dev --name init"
   },
   "repository": {
     "type": "git",

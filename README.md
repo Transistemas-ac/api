@@ -1,10 +1,10 @@
-# Transistemas auth-api 🔐
+# Transistemas api 🔐
 
 ## 💾 Instalación
 
 ```sh
 # 📥 Clonar el repositorio
-git clone https://github.com/nady4/ai-face-detect-api.git
+git clone https://github.com/Transistemas-ac/api.git
 
 # 📂 Moverse a la carpeta del proyecto
 cd ai-face-detect-api
@@ -14,7 +14,7 @@ npm install
 
 # 🛠️ Crear archivo .env
 cat <<EOF > .env
-DB_URL="postgresql://postgres:1369@localhost:5432/transistemas?schema=public"
+DB_URL="postgresql://postgres.ljlfihvoremfzgqnxotr:[PASSWORD]@aws-1-us-east-2.pooler.supabase.com:5432/postgres"
 PORT=3000
 JWT_SECRET="+V:E}Wz>M~B?Ew"
 EOF
