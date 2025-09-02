@@ -31,7 +31,7 @@ app.use("/user", verifyToken, userRoutes);
 app.use("/course", verifyToken, courseRoutes);
 app.use("/subscription", verifyToken, subscriptionRoutes);
 
-app.get("/", verifyToken, (req, res) => {
+app.get("/", (req, res) => {
   res.status(200).json({ message: "🏳️‍🌈 Transistemas API 🏳️‍⚧️" });
 });
 
