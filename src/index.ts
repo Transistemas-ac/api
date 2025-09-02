@@ -7,8 +7,9 @@ if (process.env.NODE_ENV !== "production") {
 import express from "express";
 import cors from "cors";
 import authRoutes from "./routes/auth";
-import usersRoutes from "./routes/users";
-import coursesRoutes from "./routes/courses";
+import usersRoutes from "./routes/user";
+import coursesRoutes from "./routes/course";
+import subscriptionRoutes from "./routes/subscription";
 import { verifyToken } from "./controllers/verifyToken";
 import { connectDB } from "./libs/db";
 
@@ -26,8 +27,9 @@ if (process.env.NODE_ENV === "production") {
 
 //🚦 Define routes
 app.use("/", authRoutes);
-app.use("/userss", verifyToken, usersRoutes);
-app.use("/courses", verifyToken, coursesRoutes);
+app.use("/user", verifyToken, usersRoutes);
+app.use("/course", verifyToken, coursesRoutes);
+app.use("/subscription", verifyToken, subscriptionRoutes);
 
 app.get("/", verifyToken, (req, res) => {
   res.status(200).json({ message: "🏳️‍🌈 Transistemas API 🏳️‍⚧️" });

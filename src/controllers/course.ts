@@ -1,22 +1,31 @@
 import { Request, Response } from "express";
 import prisma from "../libs/prisma";
 
-// Get all courses
 export const getCourses = async (req: Request, res: Response) => {
   try {
-    const courses = await prisma.course.findMany();
+    const courses = await prisma.course.findMany({
+      include: {
+        users: {
+          include: { user: true },
+        },
+      },
+    });
     res.status(200).json(courses);
   } catch (error) {
     res.status(500).json({ message: "Server error", error });
   }
 };
 
-// Get a course by ID
 export const getCourseById = async (req: Request, res: Response) => {
   try {
     const id = Number(req.params.id);
     const course = await prisma.course.findUnique({
       where: { id },
+      include: {
+        users: {
+          include: { user: true },
+        },
+      },
     });
     if (!course) {
       return res.status(404).json({ message: "Course not found" });
@@ -27,7 +36,21 @@ export const getCourseById = async (req: Request, res: Response) => {
   }
 };
 
-// Create a new course
+export const getCoursesByUserId = async (req: Request, res: Response) => {
+  try {
+    const userId = Number(req.params.userId);
+    const courses = await prisma.inscription.findMany({
+      where: { user_id: userId },
+      include: {
+        course: true,
+      },
+    });
+    res.status(200).json(courses.map((c: { course: any }) => c.course));
+  } catch (error) {
+    res.status(500).json({ message: "Server error", error });
+  }
+};
+
 export const createCourse = async (req: Request, res: Response) => {
   try {
     const savedCourse = await prisma.course.create({
@@ -39,7 +62,6 @@ export const createCourse = async (req: Request, res: Response) => {
   }
 };
 
-// Update a course by ID
 export const updateCourse = async (req: Request, res: Response) => {
   try {
     const id = Number(req.params.id);
@@ -56,7 +78,6 @@ export const updateCourse = async (req: Request, res: Response) => {
   }
 };
 
-// Delete a course by ID
 export const deleteCourse = async (req: Request, res: Response) => {
   try {
     const id = Number(req.params.id);
@@ -75,6 +96,7 @@ export const deleteCourse = async (req: Request, res: Response) => {
 export default {
   getCourses,
   getCourseById,
+  getCoursesByUserId,
   createCourse,
   updateCourse,
   deleteCourse,

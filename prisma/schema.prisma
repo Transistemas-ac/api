@@ -7,6 +7,17 @@ datasource db {
   url      = env("DB_URL")
 }
 
+enum UserType {
+  admin
+  teacher
+  student
+}
+
+enum CourseRole {
+  teacher
+  student
+}
+
 model User {
   id          Int             @id @default(autoincrement())
   username    String          @unique
@@ -21,7 +32,7 @@ model User {
   link        String?
   team        String?
 
-  courses     UsersCourses[]
+  courses     Subscription[]
 }
 
 model Course {
@@ -31,12 +42,12 @@ model Course {
   start_date     DateTime?
   end_date       DateTime?
   syllabus_url   String?
-  inscription_url String?
+  subscription_url String?
 
-  users          UsersCourses[]
+  users          Subscription[]
 }
 
-model UsersCourses {
+model Subscription {
   user_id   Int
   course_id Int
   role      CourseRole
@@ -45,15 +56,4 @@ model UsersCourses {
   course Course @relation(fields: [course_id], references: [id], onDelete: Cascade)
 
   @@id([user_id, course_id])
-}
-
-enum UserType {
-  admin
-  teacher
-  student
-}
-
-enum CourseRole {
-  teacher
-  student
 }
