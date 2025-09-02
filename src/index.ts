@@ -1,6 +1,15 @@
-// Load environment variables from .env file in development environments
 import dotenv from "dotenv";
-if (process.env.NODE_ENV !== "production") {
+
+// Self-ping mechanism to keep the app alive on Render
+if (process.env.NODE_ENV === "production") {
+  setInterval(() => {
+    fetch(`http://localhost:${process.env.PORT || 3000}/health`)
+      .then(() => console.log("💚 Self-ping successful"))
+      .catch((err) => console.error("❌ Self-ping failed", err));
+  }, 40000); // every 40 seconds
+}
+// Load environment variables from .env file in development environment
+else {
   dotenv.config();
 }
 
