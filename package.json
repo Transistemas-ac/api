@@ -5,9 +5,8 @@
   "main": "index.ts",
   "scripts": {
     "build": "npm run prisma:generate && npx tsc",
-    "start": "npm run prisma:deploy && node dist/index.js",
+    "start": "node dist/index.js",
     "dev": "ts-node-dev --respawn src/index.ts",
-    "prisma:seed": "node prisma/seed.js",
     "prisma:generate": "prisma generate",
     "prisma:migrate": "prisma migrate dev --name init",
     "prisma:reset": "prisma migrate reset",
