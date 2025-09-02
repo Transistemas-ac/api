@@ -7,7 +7,7 @@
     "build": "npm run prisma:generate && npx tsc",
     "start": "node dist/index.js",
     "test": "jest",
-    "dev": "ts-node-dev --respawn src/index.ts",
+    "dev": "NODE_ENV=development ts-node-dev --respawn src/index.ts",
     "prisma:generate": "prisma generate",
     "prisma:migrate": "prisma migrate dev --name init",
     "prisma:reset": "prisma migrate reset",

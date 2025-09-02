@@ -6,18 +6,12 @@ export const prisma = new PrismaClient();
 export const connectDB = () => {
   return retry(
     async (retry, number) => {
-      console.log(`⚙️  Connecting to database (attempt ${number})...`);
+      console.log(`⚙️  Connecting to database (attempt ${number}/3)...`);
       try {
         await prisma.$connect();
-        console.log(
-          `📁 Database connected (attempt ${number}) \n`,
-          process.env.DB_URL
-        );
+        console.log(`📁 Database connected\n`, process.env.DB_URL);
       } catch (err) {
-        console.error(
-          `🔴 Database connection error (attempt ${number})\n`,
-          err
-        );
+        console.error(`🔴 Database connection error\n`, err);
         retry(err);
       }
     },

@@ -1,14 +1,11 @@
 import dotenv from "dotenv";
+dotenv.config();
 
-// Self-ping mechanism to keep the app alive on Render
+// Self-ping to keep the app awake on Render
 if (process.env.NODE_ENV === "production") {
   setInterval(() => {
-    fetch(`http://localhost:${process.env.PORT || 3000}/health`)
+    fetch(`${process.env.SELF_URL}/health`)
       .then(() => console.log("💚 Self-ping successful"))
       .catch((err) => console.error("❌ Self-ping failed", err));
-  }, 20000); // every 20 seconds
-}
-// Load environment variables from .env file in development environment
-else {
-  dotenv.config();
+  }, 300000);
 }

@@ -19,13 +19,16 @@ app.use("/", authRoutes);
 app.use("/user", verifyToken, userRoutes);
 app.use("/course", verifyToken, courseRoutes);
 app.use("/subscription", verifyToken, subscriptionRoutes);
+app.get("/health", (req, res) => {
+  res.status(200).json({ message: "🏳️‍🌈 Transistemas API 🏳️‍⚧️" });
+});
 
 //🗃️ Connect to the database and start the server
 connectDB()
   .then(() => {
     const port = Number(process.env.PORT) || 3000;
     app.listen(port, "0.0.0.0", () => {
-      console.log(`💚 App is running on 🔌 port ${port}`);
+      console.log(`💚 App is running on port ${port}`);
     });
   })
   .catch((err: Error) => {
