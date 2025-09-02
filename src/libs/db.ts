@@ -9,7 +9,7 @@ export const connectDB = () => {
       console.log(`⚙️  Connecting to database (attempt ${number}/3)...`);
       try {
         await prisma.$connect();
-        console.log(`📁 Database connected\n`, process.env.DB_URL);
+        console.log(`📁 Database connected\n`);
       } catch (err) {
         console.error(`🔴 Database connection error\n`, err);
         retry(err);
