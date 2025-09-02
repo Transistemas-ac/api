@@ -7,6 +7,10 @@ router.get("/", (req, res) => {
   res.status(200).json({ message: "🏳️‍🌈 Transistemas API 🏳️‍⚧️" });
 });
 
+router.get("/healthz", (req, res) => {
+  res.status(200).json({ message: "💚" });
+});
+
 router.post("/register", (req, res) => {
   register(req, res);
 });
