@@ -7,13 +7,13 @@ datasource db {
   url      = env("DB_URL")
 }
 
-enum UserType {
+enum CredentialsType {
   admin
   teacher
   student
 }
 
-enum CourseRole {
+enum RoleType {
   teacher
   student
 }
@@ -23,7 +23,7 @@ model User {
   username    String          @unique
   email       String          @unique
   password    String
-  type        UserType
+  credentials CredentialsType @default(student)
   pronouns    String?
   first_name  String?
   last_name   String?
@@ -50,7 +50,7 @@ model Course {
 model Subscription {
   user_id   Int
   course_id Int
-  role      CourseRole
+  role      RoleType @default(student)
 
   user   User   @relation(fields: [user_id], references: [id], onDelete: Cascade)
   course Course @relation(fields: [course_id], references: [id], onDelete: Cascade)

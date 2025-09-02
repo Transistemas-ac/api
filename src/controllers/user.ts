@@ -82,7 +82,7 @@ export const deleteUser = async (req: Request, res: Response) => {
 export const getUserCourses = async (req: Request, res: Response) => {
   try {
     const id = Number(req.params.id);
-    const courses = await prisma.inscription.findMany({
+    const courses = await prisma.subscription.findMany({
       where: { user_id: id },
       include: { course: true },
     });

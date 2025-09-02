@@ -36,21 +36,6 @@ export const getCourseById = async (req: Request, res: Response) => {
   }
 };
 
-export const getCoursesByUserId = async (req: Request, res: Response) => {
-  try {
-    const userId = Number(req.params.userId);
-    const courses = await prisma.inscription.findMany({
-      where: { user_id: userId },
-      include: {
-        course: true,
-      },
-    });
-    res.status(200).json(courses.map((c: { course: any }) => c.course));
-  } catch (error) {
-    res.status(500).json({ message: "Server error", error });
-  }
-};
-
 export const createCourse = async (req: Request, res: Response) => {
   try {
     const savedCourse = await prisma.course.create({
@@ -96,7 +81,6 @@ export const deleteCourse = async (req: Request, res: Response) => {
 export default {
   getCourses,
   getCourseById,
-  getCoursesByUserId,
   createCourse,
   updateCourse,
   deleteCourse,

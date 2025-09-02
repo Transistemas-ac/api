@@ -18,12 +18,12 @@ const registrationSchema = z.object({
     .regex(/(?=.*[a-zA-Z])(?=.*\d)/, {
       message: "Password must contain at least one letter and one number",
     }),
-  type: z.enum(["admin", "student", "teacher"]).default("student"),
+  credentials: z.enum(["admin", "student", "teacher"]).default("student"),
 });
 
 const register = async (req: Request, res: Response) => {
   try {
-    const { username, email, password, type } = registrationSchema.parse(
+    const { username, email, password, credentials } = registrationSchema.parse(
       req.body
     );
 
@@ -46,7 +46,7 @@ const register = async (req: Request, res: Response) => {
     const hash = bcrypt.hashSync(password, 10);
 
     const user = await prisma.user.create({
-      data: { username, email, password: hash, type },
+      data: { username, email, password: hash, credentials },
     });
 
     return res.status(200).json({
@@ -55,7 +55,7 @@ const register = async (req: Request, res: Response) => {
         id: user.id,
         username: user.username,
         email: user.email,
-        type: user.type,
+        credentials: user.credentials,
       },
     });
   } catch (error) {

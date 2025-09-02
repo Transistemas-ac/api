@@ -7,8 +7,8 @@ if (process.env.NODE_ENV !== "production") {
 import express from "express";
 import cors from "cors";
 import authRoutes from "./routes/auth";
-import usersRoutes from "./routes/user";
-import coursesRoutes from "./routes/course";
+import userRoutes from "./routes/user";
+import courseRoutes from "./routes/course";
 import subscriptionRoutes from "./routes/subscription";
 import { verifyToken } from "./controllers/verifyToken";
 import { connectDB } from "./libs/db";
@@ -27,8 +27,8 @@ if (process.env.NODE_ENV === "production") {
 
 //🚦 Define routes
 app.use("/", authRoutes);
-app.use("/user", verifyToken, usersRoutes);
-app.use("/course", verifyToken, coursesRoutes);
+app.use("/user", verifyToken, userRoutes);
+app.use("/course", verifyToken, courseRoutes);
 app.use("/subscription", verifyToken, subscriptionRoutes);
 
 app.get("/", verifyToken, (req, res) => {
@@ -38,10 +38,9 @@ app.get("/", verifyToken, (req, res) => {
 //🗃️ Connect to the database and start the server
 connectDB()
   .then(() => {
-    console.log("🗃️ Connected to the database successfully");
+    const port = Number(process.env.PORT) || 3000;
 
-    const port = process.env.PORT || 3000;
-    app.listen(Number(process.env.PORT), "0.0.0.0", () => {
+    app.listen(port, "0.0.0.0", () => {
       console.log(`💚 App is running on 🔌 port ${port}`);
     });
   })
