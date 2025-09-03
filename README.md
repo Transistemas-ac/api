@@ -38,17 +38,17 @@ npm run dev
 
 | Technology   | Version          |
 | ------------ | ---------------- |
-| Node.js      | 20.x             |
-| Express.js   | 5.x              |
-| TypeScript   | 5.x              |
-| Prisma       | 6.x              |
+| Node.js      | 22.14            |
+| Express.js   | ^5.1.0           |
+| TypeScript   | ^5.8.3           |
+| Prisma       | ^6.12.0          |
 | PostgreSQL   | Managed Supabase |
-| Zod          | 4.x              |
-| bcrypt       | 6.x              |
-| jsonwebtoken | 9.x              |
-| cors         | 2.x              |
-| node-fetch   | 3.x              |
-| ts-node-dev  | 2.x              |
+| Zod          | ^4.0.5           |
+| bcrypt       | ^6.0.0           |
+| jsonwebtoken | ^9.0.2           |
+| cors         | ^2.8.5           |
+| node-fetch   | ^3.3.2           |
+| ts-node-dev  | ^2.0.0           |
 
 <br>
 
