@@ -5,12 +5,25 @@ import {
   subscribe,
   unsubscribe,
 } from "../controllers/subscription";
+import { verifyCredentials } from "../middlewares/verifyCredentials";
 
 const router = Router();
 
-router.get("/user/:userId", getSubscriptionsByUserId);
-router.get("/course/:courseId", getSubscriptionsByCourseId);
-router.post("/", subscribe);
-router.delete("/", unsubscribe);
+router.get(
+  "/user/:userId",
+  verifyCredentials(["owner", "teacher", "admin"]),
+  getSubscriptionsByUserId
+);
+router.get(
+  "/course/:courseId",
+  verifyCredentials(["teacher", "admin"]),
+  getSubscriptionsByCourseId
+);
+router.post("/", verifyCredentials(["student", "teacher", "admin"]), subscribe);
+router.delete(
+  "/",
+  verifyCredentials(["student", "teacher", "admin"]),
+  unsubscribe
+);
 
 export default router;

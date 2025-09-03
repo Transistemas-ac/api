@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
-import prisma from "../libs/prisma";
 import { asyncHandler } from "../libs/asyncHandler";
 import { HttpError } from "../libs/HttpError";
+import prisma from "../libs/prisma";
 
 export const getCourses = asyncHandler(async (_req: Request, res: Response) => {
   const courses = await prisma.course.findMany({

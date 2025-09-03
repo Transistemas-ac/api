@@ -8,7 +8,6 @@ import subscriptionRoutes from "./routes/subscription";
 import { connectDB } from "./libs/db";
 import { errorHandler } from "./middlewares/errorHandler";
 import { verifyAuth } from "./middlewares/verifyAuth";
-import { verifyCredentials } from "./middlewares/verifyCredentials";
 
 const app = express();
 
@@ -18,9 +17,9 @@ app.use(cors({ origin: "*" }));
 
 //🚦 Define routes
 app.use("/", authRoutes);
-app.use("/user", verifyAuth, verifyCredentials, userRoutes);
-app.use("/course", verifyAuth, verifyCredentials, courseRoutes);
-app.use("/subscription", verifyAuth, verifyCredentials, subscriptionRoutes);
+app.use("/user", verifyAuth, userRoutes); // mounting verifyAuth at router-level so controllers can rely on req.user
+app.use("/course", courseRoutes); // public routes + individual auth for protected routes
+app.use("/subscription", verifyAuth, subscriptionRoutes);
 
 app.get("/", (req, res) => {
   res.status(200).json({ message: "🏳️‍🌈 Transistemas API 🏳️‍⚧️" });
@@ -30,7 +29,7 @@ app.get("/healthz", (req, res) => {
   res.status(200).json({ message: "💚" });
 });
 
-//❌ Error handler middleware
+//❗ Error handler - must be last middleware
 app.use(errorHandler);
 
 //🗃️ Connect to the database and start the server
@@ -45,6 +44,5 @@ connectDB()
     console.error("❌ Failed to connect to database", err);
     process.exit(1);
   });
-app.use(errorHandler);
 
 export default app;
