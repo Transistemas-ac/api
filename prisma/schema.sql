@@ -1,6 +1,5 @@
 -- Enums
 CREATE TYPE "CredentialsType" AS ENUM ('admin', 'teacher', 'student');
-CREATE TYPE "RoleType" AS ENUM ('teacher', 'student');
 
 -- User table
 CREATE TABLE "User" (
@@ -8,7 +7,7 @@ CREATE TABLE "User" (
     username VARCHAR(255) NOT NULL UNIQUE,
     email VARCHAR(255) NOT NULL UNIQUE,
     password VARCHAR(255) NOT NULL,
-    credentials "CredentialsType" NOT NULL,
+    credentials "CredentialsType" NOT NULL DEFAULT 'student',
     pronouns VARCHAR(255),
     first_name VARCHAR(255),
     last_name VARCHAR(255),
@@ -29,11 +28,11 @@ CREATE TABLE "Course" (
     subscription_url TEXT
 );
 
--- Subscription table (junction table for many-to-many relation)
+-- Subscription table (junction table)
 CREATE TABLE "Subscription" (
     user_id INT NOT NULL,
     course_id INT NOT NULL,
-    role "RoleType" NOT NULL,
+    credentials "CredentialsType" NOT NULL DEFAULT 'student',
     PRIMARY KEY (user_id, course_id),
     CONSTRAINT fk_user FOREIGN KEY (user_id) REFERENCES "User"(id) ON DELETE CASCADE,
     CONSTRAINT fk_course FOREIGN KEY (course_id) REFERENCES "Course"(id) ON DELETE CASCADE
