@@ -7,7 +7,7 @@ REST API para autenticar y gestionar miembrxs de Transistemas.
 ## 💾 Instalación
 
 ```sh
-\# 📥 Clonar el repositorio
+# 📥 Clonar el repositorio
 git clone https://github.com/Transistemas-ac/api.git
 
 # 📂 Moverse a la carpeta del proyecto
@@ -81,6 +81,8 @@ npm run dev
 
 ## 💾 Base de Datos
 
+### Enums
+
 | Enum            | Valores                       |
 | --------------- | ----------------------------- |
 | CredentialsType | "admin", "teacher", "student" |
@@ -131,55 +133,63 @@ npm run dev
 
 ### Auth
 
-| Method | Endpoint      | Auth | Description             |
-| ------ | ------------- | ---- | ----------------------- |
-| POST   | \`/register\` | None | Register new user       |
-| POST   | \`/login\`    | None | Login user, returns JWT |
-| POST   | \`/logout\`   | None | Clear session cookies   |
+| Método | Endpoint    | Autenticación | Descripción                           |
+| ------ | ----------- | ------------- | ------------------------------------- |
+| POST   | `/register` | Ninguna       | Registrar un nuevo usuario            |
+| POST   | `/login`    | Ninguna       | Iniciar sesión, devuelve un token JWT |
+| POST   | `/logout`   | Ninguna       | Borrar las cookies de la sesión       |
+
+---
 
 ### User
 
-| Method | Endpoint                        | Auth | Role                | Description               |
-| ------ | ------------------------------- | ---- | ------------------- | ------------------------- |
-| GET    | \`/user/\`                      | ✅   | admin               | List all users            |
-| POST   | \`/user/\`                      | ✅   | admin               | Create new user           |
-| GET    | \`/user/:userId\`               | ✅   | owner/teacher/admin | Get user by ID            |
-| PUT    | \`/user/:userId\`               | ✅   | owner/admin         | Update user               |
-| DELETE | \`/user/:userId\`               | ✅   | admin               | Delete user               |
-| GET    | \`/user/:userId/courses\`       | ✅   | owner/teacher/admin | List user's courses       |
-| GET    | \`/user/:userId/subscriptions\` | ✅   | owner/teacher/admin | List user's subscriptions |
+| Método | Endpoint                      | Autenticación | Rol                 | Descripción                          |
+| ------ | ----------------------------- | ------------- | ------------------- | ------------------------------------ |
+| GET    | `/user/`                      | ✅            | admin               | Listar todos los usuarios            |
+| POST   | `/user/`                      | ✅            | admin               | Crear un nuevo usuario               |
+| GET    | `/user/:userId`               | ✅            | owner/teacher/admin | Obtener usuario por ID               |
+| PUT    | `/user/:userId`               | ✅            | owner/admin         | Actualizar un usuario                |
+| DELETE | `/user/:userId`               | ✅            | admin               | Eliminar un usuario                  |
+| GET    | `/user/:userId/courses`       | ✅            | owner/teacher/admin | Listar los cursos del usuario        |
+| GET    | `/user/:userId/subscriptions` | ✅            | owner/teacher/admin | Listar las suscripciones del usuario |
+
+---
 
 ### Course
 
-| Method | Endpoint              | Auth | Role          | Description       |
-| ------ | --------------------- | ---- | ------------- | ----------------- |
-| GET    | \`/course/\`          | ❌   | Public        | List all courses  |
-| GET    | \`/course/:courseId\` | ❌   | Public        | Get course by ID  |
-| POST   | \`/course/\`          | ✅   | teacher/admin | Create new course |
-| PUT    | \`/course/:courseId\` | ✅   | teacher/admin | Update course     |
-| DELETE | \`/course/:courseId\` | ✅   | admin         | Delete course     |
+| Método | Endpoint            | Autenticación | Rol           | Descripción             |
+| ------ | ------------------- | ------------- | ------------- | ----------------------- |
+| GET    | `/course/`          | ❌            | Público       | Listar todos los cursos |
+| GET    | `/course/:courseId` | ❌            | Público       | Obtener curso por ID    |
+| POST   | `/course/`          | ✅            | teacher/admin | Crear un nuevo curso    |
+| PUT    | `/course/:courseId` | ✅            | teacher/admin | Actualizar un curso     |
+| DELETE | `/course/:courseId` | ✅            | admin         | Eliminar un curso       |
+
+---
 
 ### Subscription
 
-| Method | Endpoint                           | Auth | Role                | Description                       |
-| ------ | ---------------------------------- | ---- | ------------------- | --------------------------------- |
-| GET    | \`/subscription/user/:userId\`     | ✅   | owner/teacher/admin | List subscriptions of a user      |
-| GET    | \`/subscription/course/:courseId\` | ✅   | teacher/admin       | List users subscribed to a course |
-| POST   | \`/subscription/\`                 | ✅   | Authenticated       | Subscribe user to course          |
-| DELETE | \`/subscription/\`                 | ✅   | Authenticated       | Unsubscribe user from course      |
+| Método | Endpoint                         | Autenticación | Rol                 | Descripción                              |
+| ------ | -------------------------------- | ------------- | ------------------- | ---------------------------------------- |
+| GET    | `/subscription/user/:userId`     | ✅            | owner/teacher/admin | Listar las suscripciones de un usuario   |
+| GET    | `/subscription/course/:courseId` | ✅            | teacher/admin       | Listar los usuarios suscritos a un curso |
+| POST   | `/subscription/`                 | ✅            | Autenticado         | Suscribir a un usuario a un curso        |
+| DELETE | `/subscription/`                 | ✅            | Autenticado         | Desuscribir a un usuario de un curso     |
 
-### Health & Root
+---
 
-| Method | Endpoint     | Auth | Description               |
-| ------ | ------------ | ---- | ------------------------- |
-| GET    | \`/\`        | ❌   | API welcome message       |
-| GET    | \`/healthz\` | ❌   | Health check (returns 💚) |
+### Salud y Raíz
+
+| Método | Endpoint   | Autenticación | Descripción                         |
+| ------ | ---------- | ------------- | ----------------------------------- |
+| GET    | `/`        | ❌            | Mensaje de bienvenida de la API     |
+| GET    | `/healthz` | ❌            | Verificación de salud (devuelve 💚) |
 
 <br>
 
 ## ❌ Logs de Errores
 
-- Todos los errores pasan por el middleware`errorHandler`.
+- Todos los errores pasan por el middleware `errorHandler`.
 - Zod validation errors retornan con status 400 y un array de mensajes.
 - Prisma errors como P2025 (registro no encontrado) se manejan individualmente en cada controlador.
 - Otros errores retornan status 500 con mensaje y stack en consola.
