@@ -1,32 +1,22 @@
-const { Router } = require("express");
-const {
+import { Router } from "express";
+import {
   getUsers,
   getUserById,
   createUser,
   updateUser,
   deleteUser,
-} = require("../controllers/user");
+  getUserCourses,
+  getUserSubscriptions,
+} from "../controllers/user";
 
 const router = Router();
 
-router.get("/", (req: Request, res: Response) => {
-  getUsers(req, res);
-});
-
-router.get("/:id", (req: Request, res: Response) => {
-  getUserById(req, res);
-});
-
-router.post("/", (req: Request, res: Response) => {
-  createUser(req, res);
-});
-
-router.put("/:id", (req: Request, res: Response) => {
-  updateUser(req, res);
-});
-
-router.delete("/:id", (req: Request, res: Response) => {
-  deleteUser(req, res);
-});
+router.get("/", getUsers);
+router.get("/:userId", getUserById);
+router.get("/:userId/courses", getUserCourses);
+router.get("/:userId/subscriptions", getUserSubscriptions);
+router.post("/", createUser);
+router.put("/:userId", updateUser);
+router.delete("/:userId", deleteUser);
 
 export default router;

@@ -1,102 +1,63 @@
 import { Request, Response } from "express";
 import prisma from "../libs/prisma";
+import { asyncHandler } from "../libs/asyncHandler";
+import { HttpError } from "../libs/HttpError";
 
-export const getUsers = async (req: Request, res: Response) => {
-  try {
-    const users = await prisma.user.findMany({
-      include: {
-        courses: {
-          include: { course: true },
-        },
-      },
-    });
-    res.status(200).json(users);
-  } catch (error) {
-    res.status(500).json({ message: "Server error", error });
-  }
-};
+export const getUsers = asyncHandler(async (_req: Request, res: Response) => {
+  const users = await prisma.user.findMany({
+    include: { subscriptions: { include: { course: true } } },
+  });
+  res.status(200).json(users);
+});
 
-export const getUserById = async (req: Request, res: Response) => {
-  try {
-    const id = Number(req.params.id);
-    const user = await prisma.user.findUnique({
-      where: { id },
-      include: {
-        courses: {
-          include: { course: true },
-        },
-      },
-    });
-    if (!user) {
-      return res.status(404).json({ message: "User not found" });
-    }
-    res.status(200).json(user);
-  } catch (error) {
-    res.status(500).json({ message: "Server error", error });
-  }
-};
+export const getUserById = asyncHandler(async (req: Request, res: Response) => {
+  const id = Number(req.params.userId ?? req.params.id);
+  const user = await prisma.user.findUnique({
+    where: { id },
+    include: { subscriptions: { include: { course: true } } },
+  });
+  if (!user) throw new HttpError(404, "User not found");
+  res.status(200).json(user);
+});
 
-export const createUser = async (req: Request, res: Response) => {
-  try {
-    const savedUser = await prisma.user.create({
-      data: req.body,
-    });
-    res.status(201).json(savedUser);
-  } catch (error) {
-    res.status(400).json({ message: "Bad request", error });
-  }
-};
+export const createUser = asyncHandler(async (req: Request, res: Response) => {
+  const savedUser = await prisma.user.create({ data: req.body });
+  res.status(201).json(savedUser);
+});
 
-export const updateUser = async (req: Request, res: Response) => {
-  try {
-    const id = Number(req.params.id);
-    const updatedUser = await prisma.user.update({
-      where: { id },
-      data: req.body,
-    });
-    res.status(200).json(updatedUser);
-  } catch (error: any) {
-    if (error.code === "P2025") {
-      return res.status(404).json({ message: "User not found" });
-    }
-    res.status(400).json({ message: "Bad request", error });
-  }
-};
+export const updateUser = asyncHandler(async (req: Request, res: Response) => {
+  const id = Number(req.params.userId ?? req.params.id);
+  const updatedUser = await prisma.user.update({
+    where: { id },
+    data: req.body,
+  });
+  res.status(200).json(updatedUser);
+});
 
-export const deleteUser = async (req: Request, res: Response) => {
-  try {
-    const id = Number(req.params.id);
-    await prisma.user.delete({
-      where: { id },
-    });
-    res.status(204).send();
-  } catch (error: any) {
-    if (error.code === "P2025") {
-      return res.status(404).json({ message: "User not found" });
-    }
-    res.status(400).json({ message: "Bad request", error });
-  }
-};
+export const deleteUser = asyncHandler(async (req: Request, res: Response) => {
+  const id = Number(req.params.userId ?? req.params.id);
+  await prisma.user.delete({ where: { id } });
+  res.status(204).send();
+});
 
-// Get all courses for a user
-export const getUserCourses = async (req: Request, res: Response) => {
-  try {
-    const id = Number(req.params.id);
+export const getUserCourses = asyncHandler(
+  async (req: Request, res: Response) => {
+    const id = Number(req.params.userId ?? req.params.id);
     const courses = await prisma.subscription.findMany({
       where: { user_id: id },
       include: { course: true },
     });
-    res.status(200).json(courses.map((c: { course: any }) => c.course));
-  } catch (error) {
-    res.status(500).json({ message: "Server error", error });
+    res.status(200).json(courses.map((c) => c.course));
   }
-};
+);
 
-export default {
-  getUsers,
-  getUserById,
-  createUser,
-  updateUser,
-  deleteUser,
-  getUserCourses,
-};
+export const getUserSubscriptions = asyncHandler(
+  async (req: Request, res: Response) => {
+    const id = Number(req.params.userId ?? req.params.id);
+    const subscriptions = await prisma.subscription.findMany({
+      where: { user_id: id },
+      include: { course: true },
+    });
+    res.status(200).json(subscriptions);
+  }
+);

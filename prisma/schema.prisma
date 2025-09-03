@@ -12,12 +12,6 @@ enum CredentialsType {
   teacher
   student
 }
-
-enum RoleType {
-  teacher
-  student
-}
-
 model User {
   id          Int             @id @default(autoincrement())
   username    String          @unique
@@ -32,7 +26,7 @@ model User {
   link        String?
   team        String?
 
-  courses     Subscription[]
+  subscriptions     Subscription[]
 }
 
 model Course {
@@ -44,13 +38,13 @@ model Course {
   syllabus_url   String?
   subscription_url String?
 
-  users          Subscription[]
+  subscriptions          Subscription[]
 }
 
 model Subscription {
   user_id   Int
   course_id Int
-  role      RoleType @default(student)
+  credentials      CredentialsType @default(student)
 
   user   User   @relation(fields: [user_id], references: [id], onDelete: Cascade)
   course Course @relation(fields: [course_id], references: [id], onDelete: Cascade)

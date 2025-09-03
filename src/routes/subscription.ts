@@ -8,20 +8,9 @@ import {
 
 const router = Router();
 
-router.get("/user/:userId", (req, res) => {
-  getSubscriptionsByUserId(req, res);
-});
-
-router.get("/course/:courseId", (req, res) => {
-  getSubscriptionsByCourseId(req, res);
-});
-
-router.post("/", (req, res) => {
-  subscribe(req, res);
-});
-
-router.delete("/", (req, res) => {
-  unsubscribe(req, res);
-});
+router.get("/user/:userId", getSubscriptionsByUserId);
+router.get("/course/:courseId", getSubscriptionsByCourseId);
+router.post("/", subscribe);
+router.delete("/", unsubscribe);
 
 export default router;
