@@ -91,7 +91,7 @@ npm run dev
 
 ### `User`
 
-| Columna     | Tipo            | Restricciones               |
+| Column      | Type            | Restrictions                |
 | ----------- | --------------- | --------------------------- |
 | id          | SERIAL          | PRIMARY KEY                 |
 | username    | VARCHAR(255)    | NOT NULL, UNIQUE            |
@@ -108,19 +108,19 @@ npm run dev
 
 ### `Course`
 
-| Columna          | Tipo         | Restricciones |
-| ---------------- | ------------ | ------------- |
-| id               | SERIAL       | PRIMARY KEY   |
-| title            | VARCHAR(255) | NOT NULL      |
-| description      | TEXT         |               |
-| start_date       | TIMESTAMPTZ  |               |
-| end_date         | TIMESTAMPTZ  |               |
-| syllabus_url     | TEXT         |               |
-| subscription_url | TEXT         |               |
+| Column           | Type         | Restrictions |
+| ---------------- | ------------ | ------------ |
+| id               | SERIAL       | PRIMARY KEY  |
+| title            | VARCHAR(255) | NOT NULL     |
+| description      | TEXT         |              |
+| start_date       | TIMESTAMPTZ  |              |
+| end_date         | TIMESTAMPTZ  |              |
+| syllabus_url     | TEXT         |              |
+| subscription_url | TEXT         |              |
 
 ### `Subscription` (n:n)
 
-| Columna     | Tipo            | Restricciones                               |
+| Column      | Type            | Restrictions                                |
 | ----------- | --------------- | ------------------------------------------- |
 | user_id     | INT             | NOT NULL, FK → User(id) ON DELETE CASCADE   |
 | course_id   | INT             | NOT NULL, FK → Course(id) ON DELETE CASCADE |
@@ -133,57 +133,57 @@ npm run dev
 
 ### Auth
 
-| Método | Endpoint    | Autenticación | Descripción                           |
-| ------ | ----------- | ------------- | ------------------------------------- |
-| POST   | `/register` | Ninguna       | Registrar un nuevo usuario            |
-| POST   | `/login`    | Ninguna       | Iniciar sesión, devuelve un token JWT |
-| POST   | `/logout`   | Ninguna       | Borrar las cookies de la sesión       |
+| Method | Endpoint    | Autenticación                         | Description |
+| ------ | ----------- | ------------------------------------- | ----------- |
+| POST   | `/register` | Registrar un nuevo usuario            |
+| POST   | `/login`    | Iniciar sesión, devuelve un token JWT |
+| POST   | `/logout`   | Borrar las cookies de la sesión       |
 
 ---
 
 ### User
 
-| Método | Endpoint                      | Autenticación | Rol                 | Descripción                          |
-| ------ | ----------------------------- | ------------- | ------------------- | ------------------------------------ |
-| GET    | `/user/`                      | ✅            | admin               | Listar todos los usuarios            |
-| POST   | `/user/`                      | ✅            | admin               | Crear un nuevo usuario               |
-| GET    | `/user/:userId`               | ✅            | owner/teacher/admin | Obtener usuario por ID               |
-| PUT    | `/user/:userId`               | ✅            | owner/admin         | Actualizar un usuario                |
-| DELETE | `/user/:userId`               | ✅            | admin               | Eliminar un usuario                  |
-| GET    | `/user/:userId/courses`       | ✅            | owner/teacher/admin | Listar los cursos del usuario        |
-| GET    | `/user/:userId/subscriptions` | ✅            | owner/teacher/admin | Listar las suscripciones del usuario |
+| Method | Endpoint                      | Credentials         | Description                          |
+| ------ | ----------------------------- | ------------------- | ------------------------------------ |
+| GET    | `/user/`                      | admin               | Listar todos los usuarios            |
+| POST   | `/user/`                      | admin               | Crear un nuevo usuario               |
+| GET    | `/user/:userId`               | owner/teacher/admin | Obtener usuario por ID               |
+| PUT    | `/user/:userId`               | owner/admin         | Actualizar un usuario                |
+| DELETE | `/user/:userId`               | admin               | Eliminar un usuario                  |
+| GET    | `/user/:userId/courses`       | owner/teacher/admin | Listar los cursos del usuario        |
+| GET    | `/user/:userId/subscriptions` | owner/teacher/admin | Listar las suscripciones del usuario |
 
 ---
 
 ### Course
 
-| Método | Endpoint            | Autenticación | Rol           | Descripción             |
-| ------ | ------------------- | ------------- | ------------- | ----------------------- |
-| GET    | `/course/`          | ❌            | Público       | Listar todos los cursos |
-| GET    | `/course/:courseId` | ❌            | Público       | Obtener curso por ID    |
-| POST   | `/course/`          | ✅            | teacher/admin | Crear un nuevo curso    |
-| PUT    | `/course/:courseId` | ✅            | teacher/admin | Actualizar un curso     |
-| DELETE | `/course/:courseId` | ✅            | admin         | Eliminar un curso       |
+| Method | Endpoint            | Credentials   | Description             |
+| ------ | ------------------- | ------------- | ----------------------- |
+| GET    | `/course/`          | public        | Listar todos los cursos |
+| GET    | `/course/:courseId` | public        | Obtener curso por ID    |
+| POST   | `/course/`          | teacher/admin | Crear un nuevo curso    |
+| PUT    | `/course/:courseId` | teacher/admin | Actualizar un curso     |
+| DELETE | `/course/:courseId` | admin         | Eliminar un curso       |
 
 ---
 
 ### Subscription
 
-| Método | Endpoint                         | Autenticación | Rol                 | Descripción                              |
-| ------ | -------------------------------- | ------------- | ------------------- | ---------------------------------------- |
-| GET    | `/subscription/user/:userId`     | ✅            | owner/teacher/admin | Listar las suscripciones de un usuario   |
-| GET    | `/subscription/course/:courseId` | ✅            | teacher/admin       | Listar los usuarios suscritos a un curso |
-| POST   | `/subscription/`                 | ✅            | Autenticado         | Suscribir a un usuario a un curso        |
-| DELETE | `/subscription/`                 | ✅            | Autenticado         | Desuscribir a un usuario de un curso     |
+| Method | Endpoint                         | Credentials         | Description                              |
+| ------ | -------------------------------- | ------------------- | ---------------------------------------- |
+| GET    | `/subscription/user/:userId`     | owner/teacher/admin | Listar las suscripciones de un usuario   |
+| GET    | `/subscription/course/:courseId` | teacher/admin       | Listar los usuarios suscritos a un curso |
+| POST   | `/subscription/`                 | authorized          | Suscribir a un usuario a un curso        |
+| DELETE | `/subscription/`                 | authorized          | Desuscribir a un usuario de un curso     |
 
 ---
 
-### Salud y Raíz
+### Health and root
 
-| Método | Endpoint   | Autenticación | Descripción                         |
-| ------ | ---------- | ------------- | ----------------------------------- |
-| GET    | `/`        | ❌            | Mensaje de bienvenida de la API     |
-| GET    | `/healthz` | ❌            | Verificación de salud (devuelve 💚) |
+| Method | Endpoint   | Credentials | Description                         |
+| ------ | ---------- | ----------- | ----------------------------------- |
+| GET    | `/`        | public      | Mensaje de bienvenida de la API     |
+| GET    | `/healthz` | public      | Verificación de salud (devuelve 💚) |
 
 <br>
 
