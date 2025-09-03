@@ -81,9 +81,11 @@ npm run dev
 
 ## 💾 Base de Datos
 
+<br>
+
 ### Enums
 
-| Enum            | Valores                       |
+| Enum            | Values                       |
 | --------------- | ----------------------------- |
 | CredentialsType | "admin", "teacher", "student" |
 
@@ -93,7 +95,7 @@ npm run dev
 
 | Column      | Type            | Restrictions                |
 | ----------- | --------------- | --------------------------- |
-| id          | SERIAL          | PRIMARY KEY                 |
+| id          | SERIAL          | PRIMARY KEY 🔑              |
 | username    | VARCHAR(255)    | NOT NULL, UNIQUE            |
 | email       | VARCHAR(255)    | NOT NULL, UNIQUE            |
 | password    | VARCHAR(255)    | NOT NULL                    |
@@ -106,26 +108,30 @@ npm run dev
 | link        | TEXT            |                             |
 | team        | VARCHAR(255)    |                             |
 
+<br>
+
 ### `Course`
 
-| Column           | Type         | Restrictions |
-| ---------------- | ------------ | ------------ |
-| id               | SERIAL       | PRIMARY KEY  |
-| title            | VARCHAR(255) | NOT NULL     |
-| description      | TEXT         |              |
-| start_date       | TIMESTAMPTZ  |              |
-| end_date         | TIMESTAMPTZ  |              |
-| syllabus_url     | TEXT         |              |
-| subscription_url | TEXT         |              |
+| Column           | Type         | Restrictions     |
+| ---------------- | ------------ | ---------------- |
+| id               | SERIAL       | PRIMARY KEY 🔑   |
+| title            | VARCHAR(255) | NOT NULL         |
+| description      | TEXT         |                  |
+| start_date       | TIMESTAMPTZ  |                  |
+| end_date         | TIMESTAMPTZ  |                  |
+| syllabus_url     | TEXT         |                  |
+| subscription_url | TEXT         |                  |
+
+<br>
 
 ### `Subscription` (n:n)
 
-| Column      | Type            | Restrictions                                |
-| ----------- | --------------- | ------------------------------------------- |
-| user_id     | INT             | NOT NULL, FK → User(id) ON DELETE CASCADE   |
-| course_id   | INT             | NOT NULL, FK → Course(id) ON DELETE CASCADE |
-| credentials | CredentialsType | NOT NULL, DEFAULT 'student'                 |
-|             |                 | PRIMARY KEY (user_id, course_id)            |
+| Column      | Type            | Restrictions                                   |
+| ----------- | --------------- | ---------------------------------------------- |
+| id          | INT             | PRIMARY KEY 🔑 (user_id, course_id)            |
+| user_id     | INT             | NOT NULL, FK 🔑 → User(id) ON DELETE CASCADE   |
+| course_id   | INT             | NOT NULL, FK 🔑 → Course(id) ON DELETE CASCADE |
+| credentials | CredentialsType | NOT NULL, DEFAULT 'student'                    |
 
 <br>
 
@@ -133,13 +139,13 @@ npm run dev
 
 ### Auth
 
-| Method | Endpoint    | Autenticación                         | Description |
-| ------ | ----------- | ------------------------------------- | ----------- |
-| POST   | `/register` | Registrar un nuevo usuario            |
-| POST   | `/login`    | Iniciar sesión, devuelve un token JWT |
-| POST   | `/logout`   | Borrar las cookies de la sesión       |
+| Method | Endpoint    | Credentials                           | Description                           |
+| ------ | ----------- | ------------------------------------- | ------------------------------------- |
+| POST   | `/register` | public                                | Registrar un nuevo usuario            |
+| POST   | `/login`    | public                                | Iniciar sesión, devuelve un token JWT |
+| POST   | `/logout`   | public                                | Borrar las cookies de la sesión       |
 
----
+<br>
 
 ### User
 
@@ -153,7 +159,7 @@ npm run dev
 | GET    | `/user/:userId/courses`       | owner/teacher/admin | Listar los cursos del usuario        |
 | GET    | `/user/:userId/subscriptions` | owner/teacher/admin | Listar las suscripciones del usuario |
 
----
+<br>
 
 ### Course
 
@@ -165,7 +171,7 @@ npm run dev
 | PUT    | `/course/:courseId` | teacher/admin | Actualizar un curso     |
 | DELETE | `/course/:courseId` | admin         | Eliminar un curso       |
 
----
+<br>
 
 ### Subscription
 
@@ -176,7 +182,7 @@ npm run dev
 | POST   | `/subscription/`                 | authorized          | Suscribir a un usuario a un curso        |
 | DELETE | `/subscription/`                 | authorized          | Desuscribir a un usuario de un curso     |
 
----
+<br>
 
 ### Health and root
 
