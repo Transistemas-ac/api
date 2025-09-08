@@ -81,7 +81,11 @@ export const login = asyncHandler(async (req: Request, res: Response) => {
   });
 });
 
-export const logout = asyncHandler(async (_req: Request, res: Response) => {
+export const logout = asyncHandler(async (req: Request, res: Response) => {
+  const { username } = loginSchema.parse(req.body);
+  const user = await prisma.user.findUnique({ where: { username } });
+  if (!user) throw new HttpError(404, "User not found");
+
   res.clearCookie("token");
   res
     .status(200)

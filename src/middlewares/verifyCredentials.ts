@@ -2,14 +2,9 @@ import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
 import prisma from "../libs/prisma";
 
-export function verifyCredentials(
-  role:
-    | "admin"
-    | "teacher"
-    | "student"
-    | "owner"
-    | ("admin" | "teacher" | "student" | "owner")[]
-) {
+type Role = "admin" | "teacher" | "student" | "owner";
+
+export function verifyCredentials(role: Role | Role[]) {
   return async (req: Request, res: Response, next: NextFunction) => {
     const authHeader = req.headers.authorization;
     if (!authHeader) return res.status(401).json("No token provided 🚫");
@@ -23,20 +18,19 @@ export function verifyCredentials(
         credentials: string;
       };
 
-      // Get full user data
       const user = await prisma.user.findUnique({
         where: { id: Number(decoded.id) },
       });
       if (!user) {
         return res.status(401).json("User not found 🚫");
       }
+
       const subs = await prisma.subscription.findMany({
         where: { user_id: user.id },
-        select: { course_id: true, user_id: true },
+        select: { course_id: true },
       });
 
-      // Attach enriched user data
-      (req as any).user = {
+      req.user = {
         id: user.id,
         username: user.username,
         credentials: user.credentials,
@@ -44,13 +38,9 @@ export function verifyCredentials(
         subscriptions: subs,
       };
 
-      // Handle both single role and array of roles
       const allowedRoles = Array.isArray(role) ? role : [role];
+      const userId = user.id;
 
-      const userCredentials = user.credentials;
-      const userId = Number(user.id);
-
-      // Get parameters from request
       const targetUserIdRaw =
         req.params.userId ?? req.body.userId ?? req.query.userId;
       const targetUserId = targetUserIdRaw
@@ -64,52 +54,40 @@ export function verifyCredentials(
       };
       const courseId = getCourseId();
 
-      // Check each allowed role
       for (const allowedRole of allowedRoles) {
-        // Admin access
-        if (allowedRole === "admin" && userCredentials === "admin") {
+        if (allowedRole === "admin" && user.credentials === "admin") {
           return next();
         }
 
-        // Teacher access
-        if (allowedRole === "teacher" && userCredentials === "teacher") {
+        if (allowedRole === "teacher" && user.credentials === "teacher") {
           return next();
         }
 
-        // Student access
-        if (allowedRole === "student" && userCredentials === "student") {
-          // For course-specific endpoints, check enrollment
+        if (allowedRole === "student" && user.credentials === "student") {
           if (courseId !== undefined) {
-            const enrolledCourses = subs.map((s) => s.course_id);
-            if (enrolledCourses.includes(courseId)) {
+            if (req.user.courses.includes(courseId)) {
               return next();
             }
-          }
-          // For subscription endpoints, check course enrollment
-          else if (req.baseUrl && req.baseUrl.includes("/subscription")) {
+          } else if (req.baseUrl && req.baseUrl.includes("/subscription")) {
             const subCourseIdRaw =
               req.params.courseId ?? req.body.courseId ?? req.query.courseId;
             if (subCourseIdRaw) {
               const subCourseId = Number(subCourseIdRaw);
-              const enrolledCourses = subs.map((s) => s.course_id);
-              if (enrolledCourses.includes(subCourseId)) {
+              if (req.user.courses.includes(subCourseId)) {
                 return next();
               }
             } else if (
               !subCourseIdRaw &&
               (req.method === "POST" || req.method === "DELETE")
             ) {
-              // Allow subscribe/unsubscribe without courseId in URL
               return next();
             }
-          }
-          // For general student access (no specific course)
-          else if (courseId === undefined && targetUserId === undefined) {
+          } else if (courseId === undefined && targetUserId === undefined) {
             return next();
           }
         }
 
-        // Owner access - user accessing their own resources
+        // "owner" is internal: student/admin/teacher accessing their own userId
         if (
           allowedRole === "owner" &&
           targetUserId !== undefined &&
@@ -119,8 +97,7 @@ export function verifyCredentials(
         }
       }
 
-      // Special error messages for students
-      if (userCredentials === "student") {
+      if (user.credentials === "student") {
         if (courseId !== undefined) {
           return res
             .status(403)

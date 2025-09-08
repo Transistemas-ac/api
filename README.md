@@ -85,7 +85,7 @@ npm run dev
 
 ### Enums
 
-| Enum            | Values                       |
+| Enum            | Values                        |
 | --------------- | ----------------------------- |
 | CredentialsType | "admin", "teacher", "student" |
 
@@ -112,15 +112,15 @@ npm run dev
 
 ### `Course`
 
-| Column           | Type         | Restrictions     |
-| ---------------- | ------------ | ---------------- |
-| id               | SERIAL       | PRIMARY KEY 🔑   |
-| title            | VARCHAR(255) | NOT NULL         |
-| description      | TEXT         |                  |
-| start_date       | TIMESTAMPTZ  |                  |
-| end_date         | TIMESTAMPTZ  |                  |
-| syllabus_url     | TEXT         |                  |
-| subscription_url | TEXT         |                  |
+| Column           | Type         | Restrictions   |
+| ---------------- | ------------ | -------------- |
+| id               | SERIAL       | PRIMARY KEY 🔑 |
+| title            | VARCHAR(255) | NOT NULL       |
+| description      | TEXT         |                |
+| start_date       | TIMESTAMPTZ  |                |
+| end_date         | TIMESTAMPTZ  |                |
+| syllabus_url     | TEXT         |                |
+| subscription_url | TEXT         |                |
 
 <br>
 
@@ -137,50 +137,52 @@ npm run dev
 
 ## 🛠️ Endpoints
 
+## 🛠️ Endpoints
+
 ### Auth
 
-| Method | Endpoint    | Credentials                           | Description                           |
-| ------ | ----------- | ------------------------------------- | ------------------------------------- |
-| POST   | `/register` | public                                | Registrar un nuevo usuario            |
-| POST   | `/login`    | public                                | Iniciar sesión, devuelve un token JWT |
-| POST   | `/logout`   | public                                | Borrar las cookies de la sesión       |
+| Method | Endpoint  | Credentials | Description                           |
+| ------ | --------- | ----------- | ------------------------------------- |
+| POST   | /register | public      | Registrar un nuevo usuario            |
+| POST   | /login    | public      | Iniciar sesión, devuelve un token JWT |
+| POST   | /logout   | public      | Borrar las cookies de la sesión       |
 
 <br>
 
 ### User
 
-| Method | Endpoint                      | Credentials         | Description                          |
-| ------ | ----------------------------- | ------------------- | ------------------------------------ |
-| GET    | `/user/`                      | admin               | Listar todos los usuarios            |
-| POST   | `/user/`                      | admin               | Crear un nuevo usuario               |
-| GET    | `/user/:userId`               | owner/teacher/admin | Obtener usuario por ID               |
-| PUT    | `/user/:userId`               | owner/admin         | Actualizar un usuario                |
-| DELETE | `/user/:userId`               | admin               | Eliminar un usuario                  |
-| GET    | `/user/:userId/courses`       | owner/teacher/admin | Listar los cursos del usuario        |
-| GET    | `/user/:userId/subscriptions` | owner/teacher/admin | Listar las suscripciones del usuario |
+| Method | Endpoint                    | Credentials           | Description                          |
+| ------ | --------------------------- | --------------------- | ------------------------------------ |
+| GET    | /user/                      | admin, teacher        | Listar todos los usuarios            |
+| POST   | /user/                      | teacher, admin        | Crear un nuevo usuario               |
+| GET    | /user/:userId               | owner, teacher, admin | Obtener usuario por ID               |
+| PUT    | /user/:userId               | owner, teacher, admin | Actualizar un usuario                |
+| DELETE | /user/:userId               | owner, teacher, admin | Eliminar un usuario                  |
+| GET    | /user/:userId/courses       | owner, teacher, admin | Listar los cursos del usuario        |
+| GET    | /user/:userId/subscriptions | owner, teacher, admin | Listar las suscripciones del usuario |
 
 <br>
 
 ### Course
 
-| Method | Endpoint            | Credentials   | Description             |
-| ------ | ------------------- | ------------- | ----------------------- |
-| GET    | `/course/`          | public        | Listar todos los cursos |
-| GET    | `/course/:courseId` | public        | Obtener curso por ID    |
-| POST   | `/course/`          | teacher/admin | Crear un nuevo curso    |
-| PUT    | `/course/:courseId` | teacher/admin | Actualizar un curso     |
-| DELETE | `/course/:courseId` | admin         | Eliminar un curso       |
+| Method | Endpoint          | Credentials    | Description             |
+| ------ | ----------------- | -------------- | ----------------------- |
+| GET    | /course/          | public         | Listar todos los cursos |
+| GET    | /course/:courseId | public         | Obtener curso por ID    |
+| POST   | /course/          | teacher, admin | Crear un nuevo curso    |
+| PUT    | /course/:courseId | teacher, admin | Actualizar un curso     |
+| DELETE | /course/:courseId | teacher, admin | Eliminar un curso       |
 
 <br>
 
 ### Subscription
 
-| Method | Endpoint                         | Credentials         | Description                              |
-| ------ | -------------------------------- | ------------------- | ---------------------------------------- |
-| GET    | `/subscription/user/:userId`     | owner/teacher/admin | Listar las suscripciones de un usuario   |
-| GET    | `/subscription/course/:courseId` | teacher/admin       | Listar los usuarios suscritos a un curso |
-| POST   | `/subscription/`                 | authorized          | Suscribir a un usuario a un curso        |
-| DELETE | `/subscription/`                 | authorized          | Desuscribir a un usuario de un curso     |
+| Method | Endpoint                       | Credentials             | Description                              |
+| ------ | ------------------------------ | ----------------------- | ---------------------------------------- |
+| GET    | /subscription/user/:userId     | owner, teacher, admin   | Listar las suscripciones de un usuario   |
+| GET    | /subscription/course/:courseId | teacher, admin          | Listar los usuarios suscritos a un curso |
+| POST   | /subscription/                 | student, teacher, admin | Suscribir a un usuario a un curso        |
+| DELETE | /subscription/                 | student, teacher, admin | Desuscribir a un usuario de un curso     |
 
 <br>
 

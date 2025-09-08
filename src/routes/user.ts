@@ -12,7 +12,7 @@ import { verifyCredentials } from "../middlewares/verifyCredentials";
 
 const router = Router();
 
-router.get("/", verifyCredentials("admin"), getUsers);
+router.get("/", verifyCredentials(["admin", "teacher"]), getUsers);
 router.get(
   "/:userId",
   verifyCredentials(["owner", "teacher", "admin"]),
@@ -29,8 +29,16 @@ router.get(
   getUserSubscriptions
 );
 
-router.post("/", verifyCredentials(["owner", "admin"]), createUser);
-router.put("/:userId", verifyCredentials(["owner", "admin"]), updateUser);
-router.delete("/:userId", verifyCredentials("admin"), deleteUser);
+router.post("/", verifyCredentials(["teacher", "admin"]), createUser);
+router.put(
+  "/:userId",
+  verifyCredentials(["owner", "teacher", "admin"]),
+  updateUser
+);
+router.delete(
+  "/:userId",
+  verifyCredentials(["owner", "teacher", "admin"]),
+  deleteUser
+);
 
 export default router;

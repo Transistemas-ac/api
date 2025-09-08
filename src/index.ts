@@ -17,8 +17,8 @@ app.use(cors({ origin: "*" }));
 
 //🚦 Define routes
 app.use("/", authRoutes);
-app.use("/user", verifyAuth, userRoutes); // mounting verifyAuth at router-level so controllers can rely on req.user
-app.use("/course", courseRoutes); // public routes + individual auth for protected routes
+app.use("/user", verifyAuth, userRoutes);
+app.use("/course", courseRoutes);
 app.use("/subscription", verifyAuth, subscriptionRoutes);
 
 app.get("/", (req, res) => {
@@ -29,20 +29,22 @@ app.get("/healthz", (req, res) => {
   res.status(200).json({ message: "💚" });
 });
 
-//❗ Error handler - must be last middleware
+//❗ Error handler
 app.use(errorHandler);
 
-//🗃️ Connect to the database and start the server
-connectDB()
-  .then(() => {
-    const port = Number(process.env.PORT) || 3000;
-    app.listen(port, "0.0.0.0", () => {
-      console.log(`💚 App is running on port ${port}`);
+//🗃️ Connect DB and start server only if not in test
+if (process.env.NODE_ENV !== "test") {
+  connectDB()
+    .then(() => {
+      const port = Number(process.env.PORT) || 3000;
+      app.listen(port, "0.0.0.0", () => {
+        console.log(`💚 App is running on port ${port}`);
+      });
+    })
+    .catch((err: Error) => {
+      console.error("❌ Failed to connect to database", err);
+      process.exit(1);
     });
-  })
-  .catch((err: Error) => {
-    console.error("❌ Failed to connect to database", err);
-    process.exit(1);
-  });
+}
 
 export default app;
