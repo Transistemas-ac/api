@@ -122,6 +122,8 @@ export function verifyCredentials(role: Role | Role[]) {
 
       return res.status(403).json("Forbidden 🚫");
     } catch {
+      const token = authHeader.split(" ")[1];
+      console.log("Token:", token);
       return res.status(401).json("Invalid token 🚫");
     }
   };
