@@ -33,28 +33,49 @@ export const subscribe = asyncHandler(async (req: Request, res: Response) => {
   });
   if (!course) throw new HttpError(404, "Course not found");
 
-  const relation = await prisma.subscription.create({
-    data: {
-      user_id: Number(userId),
-      course_id: Number(courseId),
-      credentials: role ?? "student",
-    },
-  });
+  try {
+    const relation = await prisma.subscription.create({
+      data: {
+        user_id: Number(userId),
+        course_id: Number(courseId),
+        credentials: role ?? "student",
+      },
+    });
 
-  res.status(201).json(relation);
+    res.status(201).json(relation);
+  } catch (err: any) {
+    if (err.code === "P2002") {
+      return res
+        .status(409)
+        .json("🚫 Conflict: User is already enrolled in this course");
+    }
+    throw err;
+  }
 });
 
 export const unsubscribe = asyncHandler(async (req: Request, res: Response) => {
   const { userId, courseId } = req.body;
 
-  await prisma.subscription.delete({
-    where: {
-      user_id_course_id: {
-        user_id: Number(userId),
-        course_id: Number(courseId),
-      },
-    },
+  const course = await prisma.course.findUnique({
+    where: { id: Number(courseId) },
   });
+  if (!course) throw new HttpError(404, "Course not found");
 
-  res.status(200).json({ message: "User removed from course" });
+  try {
+    await prisma.subscription.delete({
+      where: {
+        user_id_course_id: {
+          user_id: Number(userId),
+          course_id: Number(courseId),
+        },
+      },
+    });
+
+    res.status(200).json({ message: "User removed from course" });
+  } catch (err: any) {
+    if (err.code === "P2025") {
+      return res.status(404).json("🚫 Not Found: Subscription does not exist");
+    }
+    throw err;
+  }
 });

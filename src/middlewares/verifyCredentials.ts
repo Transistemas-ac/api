@@ -65,13 +65,27 @@ export function verifyCredentials(role: Role | Role[]) {
         }
 
         if (allowedRole === "student" && user.credentials === "student") {
-          // Special case: students enrolling themselves
+          // Students enrolling
           if (req.baseUrl.includes("/subscription") && req.method === "POST") {
             const targetUserIdPost = req.body.userId;
             if (!targetUserIdPost || Number(targetUserIdPost) !== user.id) {
               return res
                 .status(403)
                 .json("Forbidden: Students can only enroll themselves 🚫");
+            }
+            return next();
+          }
+
+          // Students unsubscribing
+          if (
+            req.baseUrl.includes("/subscription") &&
+            req.method === "DELETE"
+          ) {
+            const targetUserIdDelete = req.body.userId;
+            if (!targetUserIdDelete || Number(targetUserIdDelete) !== user.id) {
+              return res
+                .status(403)
+                .json("Forbidden: Students can only unsubscribe themselves 🚫");
             }
             return next();
           }
