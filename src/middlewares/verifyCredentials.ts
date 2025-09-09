@@ -12,6 +12,7 @@ export function verifyCredentials(role: Role | Role[]) {
     const token = authHeader.split(" ")[1];
     try {
       const secret = process.env.JWT_SECRET as string;
+      console.log("JWT_SECRET:", secret);
       const decoded = jwt.verify(token, secret) as {
         id: number;
         username: string;
