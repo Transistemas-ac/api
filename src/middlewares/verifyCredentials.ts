@@ -21,8 +21,23 @@ export function verifyCredentials(role: Role | Role[]) {
       const user = await prisma.user.findUnique({
         where: { id: Number(decoded.id) },
       });
-      if (!user) {
-        return res.status(401).json("User not found 🚫");
+      if (!user) return res.status(401).json("User not found 🚫");
+
+      const allowedRoles = Array.isArray(role) ? role : [role];
+
+      // EARLY RETURN FOR ADMIN / TEACHER
+      if (
+        (allowedRoles.includes("admin") && user.credentials === "admin") ||
+        (allowedRoles.includes("teacher") && user.credentials === "teacher")
+      ) {
+        req.user = {
+          id: user.id,
+          username: user.username,
+          credentials: user.credentials,
+          courses: [],
+          subscriptions: [],
+        };
+        return next();
       }
 
       const subs = await prisma.subscription.findMany({
@@ -38,9 +53,7 @@ export function verifyCredentials(role: Role | Role[]) {
         subscriptions: subs,
       };
 
-      const allowedRoles = Array.isArray(role) ? role : [role];
       const userId = user.id;
-
       const targetUserIdRaw =
         req.params.userId ?? req.body.userId ?? req.query.userId;
       const targetUserId = targetUserIdRaw
@@ -52,20 +65,10 @@ export function verifyCredentials(role: Role | Role[]) {
           req.params?.courseId ?? req.body?.courseId ?? req.query?.courseId;
         return raw ? Number(raw) : undefined;
       };
-
       const courseId = getCourseId();
 
       for (const allowedRole of allowedRoles) {
-        if (allowedRole === "admin" && user.credentials === "admin") {
-          return next();
-        }
-
-        if (allowedRole === "teacher" && user.credentials === "teacher") {
-          return next();
-        }
-
         if (allowedRole === "student" && user.credentials === "student") {
-          // Students enrolling
           if (req.baseUrl.includes("/subscription") && req.method === "POST") {
             const targetUserIdPost = req.body.userId;
             if (!targetUserIdPost || Number(targetUserIdPost) !== user.id) {
@@ -75,8 +78,6 @@ export function verifyCredentials(role: Role | Role[]) {
             }
             return next();
           }
-
-          // Students unsubscribing
           if (
             req.baseUrl.includes("/subscription") &&
             req.method === "DELETE"
@@ -89,16 +90,10 @@ export function verifyCredentials(role: Role | Role[]) {
             }
             return next();
           }
-
-          // Course-specific access (must be enrolled)
           if (courseId !== undefined && req.user.courses.includes(courseId)) {
             return next();
           }
-
-          // Generic student-level access
-          if (!courseId && !targetUserId) {
-            return next();
-          }
+          if (!courseId && !targetUserId) return next();
         }
 
         if (
@@ -110,7 +105,6 @@ export function verifyCredentials(role: Role | Role[]) {
         }
       }
 
-      // Deny students if not enrolled in requested course
       if (user.credentials === "student") {
         if (courseId !== undefined) {
           return res
@@ -140,5 +134,3 @@ export function verifyCredentials(role: Role | Role[]) {
     }
   };
 }
-
-export default verifyCredentials;
