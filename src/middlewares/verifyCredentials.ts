@@ -65,30 +65,20 @@ export function verifyCredentials(role: Role | Role[]) {
         }
 
         if (allowedRole === "student" && user.credentials === "student") {
-          if (courseId !== undefined) {
-            if (req.user.courses.includes(courseId)) {
-              return next();
-            }
-          } else if (req.baseUrl && req.baseUrl.includes("/subscription")) {
-            const subCourseIdRaw =
-              req.params.courseId ?? req.body.courseId ?? req.query.courseId;
-            if (subCourseIdRaw) {
-              const subCourseId = Number(subCourseIdRaw);
-              if (req.user.courses.includes(subCourseId)) {
-                return next();
-              }
-            } else if (
-              !subCourseIdRaw &&
-              (req.method === "POST" || req.method === "DELETE")
-            ) {
-              return next();
-            }
-          } else if (courseId === undefined && targetUserId === undefined) {
+          if (req.baseUrl.includes("/subscription") && req.method === "POST") {
+            // Allow students to enroll in a new course
+            return next();
+          }
+
+          if (courseId !== undefined && req.user.courses.includes(courseId)) {
+            return next();
+          }
+
+          if (!courseId && !targetUserId) {
             return next();
           }
         }
 
-        // "owner" is internal: student/admin/teacher accessing their own userId
         if (
           allowedRole === "owner" &&
           targetUserId !== undefined &&
