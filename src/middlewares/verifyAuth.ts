@@ -17,7 +17,6 @@ export const verifyAuth = async (
   next: NextFunction
 ) => {
   const authHeader = req.headers.authorization;
-  console.log("Auth Header:", authHeader);
   if (!authHeader) {
     res.sendStatus(403);
     return;
@@ -35,13 +34,13 @@ export const verifyAuth = async (
     const secret = process.env.JWT_SECRET || "";
     const decoded = jwt.verify(token, secret) as any;
     if (!decoded || !decoded.id) {
-      return res.status(401).json({ message: "Invalid token" });
+      return res.status(401).json({ message: "❌ Invalid token" });
     }
     const user = await prisma.user.findUnique({
       where: { id: Number(decoded.id) },
     });
     if (!user) {
-      return res.status(401).json({ message: "User not found" });
+      return res.status(401).json({ message: "❌ User not found" });
     }
     const subs = await prisma.subscription.findMany({
       where: { user_id: user.id },
@@ -55,7 +54,7 @@ export const verifyAuth = async (
     };
     next();
   } catch (err) {
-    return res.status(401).json({ message: "Unauthorized", error: err });
+    return res.status(401).json({ message: "❌ Unauthorized", error: err });
   }
 };
 
@@ -67,6 +66,7 @@ export const signToken = (
   return new Promise((resolve, reject) => {
     jwt.sign(payload, secret, options, (err, token) => {
       if (err) {
+        console.error(err);
         return reject(err);
       }
       resolve(token);

@@ -7,6 +7,7 @@ export const getUsers = asyncHandler(async (_req: Request, res: Response) => {
   const users = await prisma.user.findMany({
     include: { subscriptions: { include: { course: true } } },
   });
+  if (!users.length) throw new HttpError(404, "❌ No users found");
   res.status(200).json(users);
 });
 
@@ -16,12 +17,13 @@ export const getUserById = asyncHandler(async (req: Request, res: Response) => {
     where: { id },
     include: { subscriptions: { include: { course: true } } },
   });
-  if (!user) throw new HttpError(404, "User not found");
+  if (!user) throw new HttpError(404, "❌ User not found");
   res.status(200).json(user);
 });
 
 export const createUser = asyncHandler(async (req: Request, res: Response) => {
   const savedUser = await prisma.user.create({ data: req.body });
+  console.log("✅ User created successfully");
   res.status(201).json(savedUser);
 });
 
@@ -31,12 +33,14 @@ export const updateUser = asyncHandler(async (req: Request, res: Response) => {
     where: { id },
     data: req.body,
   });
+  console.log("✅ User updated successfully");
   res.status(200).json(updatedUser);
 });
 
 export const deleteUser = asyncHandler(async (req: Request, res: Response) => {
   const id = Number(req.params.userId ?? req.params.id);
   await prisma.user.delete({ where: { id } });
+  console.log("✅ User deleted successfully");
   res.status(204).send();
 });
 

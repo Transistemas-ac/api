@@ -32,13 +32,15 @@ export const register = asyncHandler(async (req: Request, res: Response) => {
     where: { OR: [{ email }, { username }] },
   });
   if (existingUser)
-    throw new HttpError(409, "Email or username already registered");
+    throw new HttpError(409, "❌ Email or username already registered");
 
   const hash = await bcrypt.hash(password, 10);
 
   const user = await prisma.user.create({
     data: { username, email, password: hash, credentials },
   });
+
+  console.log("✅ User registered successfully", user);
 
   res.status(201).json({
     success: true,
@@ -55,19 +57,21 @@ export const login = asyncHandler(async (req: Request, res: Response) => {
   const { username, password } = loginSchema.parse(req.body);
 
   const user = await prisma.user.findUnique({ where: { username } });
-  if (!user) throw new HttpError(404, "User not found");
+  if (!user) throw new HttpError(404, "❌ User not found");
 
   const isPasswordValid = await bcrypt.compare(password, user.password);
-  if (!isPasswordValid) throw new HttpError(401, "Password incorrect");
+  if (!isPasswordValid) throw new HttpError(401, "❌ Password incorrect");
 
   const secret = process.env.JWT_SECRET;
-  if (!secret) throw new HttpError(500, "JWT_SECRET not configured");
+  if (!secret) throw new HttpError(500, "❌ JWT_SECRET not configured");
 
   const token = jwt.sign(
     { id: user.id, username: user.username, credentials: user.credentials },
     secret,
     { expiresIn: "7d" }
   );
+
+  console.log("✅ User logged in successfully", user);
 
   res.status(200).json({
     success: true,
@@ -84,10 +88,10 @@ export const login = asyncHandler(async (req: Request, res: Response) => {
 export const logout = asyncHandler(async (req: Request, res: Response) => {
   const { username } = loginSchema.parse(req.body);
   const user = await prisma.user.findUnique({ where: { username } });
-  if (!user) throw new HttpError(404, "User not found");
+  if (!user) throw new HttpError(404, "❌ User not found");
 
   res.clearCookie("token");
   res
     .status(200)
-    .json({ success: true, message: "User logged out successfully" });
+    .json({ success: true, message: "✅ User logged out successfully" });
 });

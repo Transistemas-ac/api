@@ -7,7 +7,7 @@ type Role = "admin" | "teacher" | "student" | "owner";
 export function verifyCredentials(role: Role | Role[]) {
   return async (req: Request, res: Response, next: NextFunction) => {
     const authHeader = req.headers.authorization;
-    if (!authHeader) return res.status(401).json("No token provided 🚫");
+    if (!authHeader) return res.status(401).json("❌ No token provided");
 
     const token = authHeader.split(" ")[1];
     try {
@@ -21,7 +21,7 @@ export function verifyCredentials(role: Role | Role[]) {
       const user = await prisma.user.findUnique({
         where: { id: Number(decoded.id) },
       });
-      if (!user) return res.status(401).json("User not found 🚫");
+      if (!user) return res.status(401).json("❌ User not found");
 
       const allowedRoles = Array.isArray(role) ? role : [role];
 
@@ -74,7 +74,7 @@ export function verifyCredentials(role: Role | Role[]) {
             if (!targetUserIdPost || Number(targetUserIdPost) !== user.id) {
               return res
                 .status(403)
-                .json("Forbidden: Students can only enroll themselves 🚫");
+                .json("❌  Forbidden: Students can only enroll themselves");
             }
             return next();
           }
@@ -86,7 +86,7 @@ export function verifyCredentials(role: Role | Role[]) {
             if (!targetUserIdDelete || Number(targetUserIdDelete) !== user.id) {
               return res
                 .status(403)
-                .json("Forbidden: Students can only unsubscribe themselves 🚫");
+                .json("❌ Forbidden: Students can only unsubscribe themselves");
             }
             return next();
           }
@@ -109,7 +109,7 @@ export function verifyCredentials(role: Role | Role[]) {
         if (courseId !== undefined) {
           return res
             .status(403)
-            .json("Forbidden: Not enrolled in the course 🚫");
+            .json("❌ Forbidden: Not enrolled in the course");
         }
         if (req.baseUrl.includes("/subscription")) {
           const subCourseIdRaw =
@@ -117,20 +117,20 @@ export function verifyCredentials(role: Role | Role[]) {
           if (subCourseIdRaw) {
             return res
               .status(403)
-              .json("Forbidden: Not enrolled in the course 🚫");
+              .json("❌ Forbidden: Not enrolled in the course");
           }
           if (!subCourseIdRaw && req.method === "GET") {
             return res
               .status(400)
-              .json("Bad Request: Missing courseId parameter 🚫");
+              .json("❌ Bad Request: Missing courseId parameter");
           }
         }
       }
 
-      return res.status(403).json("Forbidden 🚫");
+      return res.status(403).json("Forbidden");
     } catch (err) {
-      console.error("JWT verification error:", err);
-      return res.status(401).json("Invalid token 🚫");
+      console.error("❌ JWT verification error:", err);
+      return res.status(401).json("❌ Invalid token");
     }
   };
 }

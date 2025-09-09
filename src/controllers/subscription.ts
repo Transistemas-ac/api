@@ -10,6 +10,11 @@ export const getSubscriptionsByUserId = asyncHandler(
       where: { user_id: userId },
       include: { course: true },
     });
+    if (!subs.length) {
+      return res
+        .status(404)
+        .json({ message: "❌ No subscriptions found for this user" });
+    }
     res.status(200).json(subs.map((s) => s.course));
   }
 );
@@ -21,6 +26,11 @@ export const getSubscriptionsByCourseId = asyncHandler(
       where: { course_id: courseId },
       include: { user: true },
     });
+    if (!subs.length) {
+      return res
+        .status(404)
+        .json({ message: "❌ No subscriptions found for this course" });
+    }
     res.status(200).json(subs.map((s) => s.user));
   }
 );
@@ -31,7 +41,7 @@ export const subscribe = asyncHandler(async (req: Request, res: Response) => {
   const course = await prisma.course.findUnique({
     where: { id: Number(courseId) },
   });
-  if (!course) throw new HttpError(404, "Course not found");
+  if (!course) throw new HttpError(404, "❌ Course not found");
 
   try {
     const relation = await prisma.subscription.create({
@@ -41,13 +51,13 @@ export const subscribe = asyncHandler(async (req: Request, res: Response) => {
         credentials: role ?? "student",
       },
     });
-
+    console.log("✅ User enrolled in course", relation);
     res.status(201).json(relation);
   } catch (err: any) {
     if (err.code === "P2002") {
       return res
         .status(409)
-        .json("🚫 Conflict: User is already enrolled in this course");
+        .json("❌ Conflict: User is already enrolled in this course");
     }
     throw err;
   }
@@ -59,7 +69,7 @@ export const unsubscribe = asyncHandler(async (req: Request, res: Response) => {
   const course = await prisma.course.findUnique({
     where: { id: Number(courseId) },
   });
-  if (!course) throw new HttpError(404, "Course not found");
+  if (!course) throw new HttpError(404, "❌ Course not found");
 
   try {
     await prisma.subscription.delete({
@@ -71,7 +81,7 @@ export const unsubscribe = asyncHandler(async (req: Request, res: Response) => {
       },
     });
 
-    res.status(200).json({ message: "User removed from course" });
+    res.status(200).json({ message: "✅ User removed from course" });
   } catch (err: any) {
     if (err.code === "P2025") {
       return res.status(404).json("🚫 Not Found: Subscription does not exist");
