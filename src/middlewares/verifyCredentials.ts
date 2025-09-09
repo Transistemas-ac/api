@@ -49,9 +49,10 @@ export function verifyCredentials(role: Role | Role[]) {
 
       const getCourseId = () => {
         const raw =
-          req.params.courseId ?? req.body.courseId ?? req.query.courseId;
+          req.params?.courseId ?? req.body?.courseId ?? req.query?.courseId;
         return raw ? Number(raw) : undefined;
       };
+
       const courseId = getCourseId();
 
       for (const allowedRole of allowedRoles) {
