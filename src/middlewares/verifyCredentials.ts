@@ -12,7 +12,6 @@ export function verifyCredentials(role: Role | Role[]) {
     const token = authHeader.split(" ")[1];
     try {
       const secret = process.env.JWT_SECRET as string;
-      console.log("JWT_SECRET:", secret);
       const decoded = jwt.verify(token, secret) as {
         id: number;
         username: string;
@@ -121,9 +120,8 @@ export function verifyCredentials(role: Role | Role[]) {
       }
 
       return res.status(403).json("Forbidden 🚫");
-    } catch {
-      const token = authHeader.split(" ")[1];
-      console.log("Token:", token);
+    } catch (err) {
+      console.error("JWT verification error:", err);
       return res.status(401).json("Invalid token 🚫");
     }
   };
