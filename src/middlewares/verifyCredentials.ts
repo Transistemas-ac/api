@@ -65,15 +65,23 @@ export function verifyCredentials(role: Role | Role[]) {
         }
 
         if (allowedRole === "student" && user.credentials === "student") {
+          // Special case: students enrolling themselves
           if (req.baseUrl.includes("/subscription") && req.method === "POST") {
-            // Allow students to enroll in a new course
+            const targetUserIdPost = req.body.userId;
+            if (!targetUserIdPost || Number(targetUserIdPost) !== user.id) {
+              return res
+                .status(403)
+                .json("Forbidden: Students can only enroll themselves 🚫");
+            }
             return next();
           }
 
+          // Course-specific access (must be enrolled)
           if (courseId !== undefined && req.user.courses.includes(courseId)) {
             return next();
           }
 
+          // Generic student-level access
           if (!courseId && !targetUserId) {
             return next();
           }
@@ -88,13 +96,14 @@ export function verifyCredentials(role: Role | Role[]) {
         }
       }
 
+      // Deny students if not enrolled in requested course
       if (user.credentials === "student") {
         if (courseId !== undefined) {
           return res
             .status(403)
             .json("Forbidden: Not enrolled in the course 🚫");
         }
-        if (req.baseUrl && req.baseUrl.includes("/subscription")) {
+        if (req.baseUrl.includes("/subscription")) {
           const subCourseIdRaw =
             req.params.courseId ?? req.body.courseId ?? req.query.courseId;
           if (subCourseIdRaw) {
