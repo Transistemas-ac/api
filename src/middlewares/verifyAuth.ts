@@ -17,6 +17,7 @@ export const verifyAuth = async (
   next: NextFunction
 ) => {
   const authHeader = req.headers.authorization;
+  console.log("Auth Header:", authHeader);
   if (!authHeader) {
     res.sendStatus(403);
     return;
