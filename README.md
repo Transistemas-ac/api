@@ -143,7 +143,7 @@ npm run dev
 
 | Method | Endpoint  | Credentials | Description                           |
 | ------ | --------- | ----------- | ------------------------------------- |
-| POST   | /register | public      | Registrar un nuevo usuario            |
+| POST   | /register | public      | Registrar un nuevo usuarix            |
 | POST   | /login    | public      | Iniciar sesión, devuelve un token JWT |
 | POST   | /logout   | public      | Borrar las cookies de la sesión       |
 
@@ -153,13 +153,13 @@ npm run dev
 
 | Method | Endpoint                    | Credentials           | Description                          |
 | ------ | --------------------------- | --------------------- | ------------------------------------ |
-| GET    | /user/                      | admin, teacher        | Listar todos los usuarios            |
-| POST   | /user/                      | teacher, admin        | Crear un nuevo usuario               |
-| GET    | /user/:userId               | owner, teacher, admin | Obtener usuario por ID               |
-| PUT    | /user/:userId               | owner, teacher, admin | Actualizar un usuario                |
-| DELETE | /user/:userId               | owner, teacher, admin | Eliminar un usuario                  |
-| GET    | /user/:userId/courses       | owner, teacher, admin | Listar los cursos del usuario        |
-| GET    | /user/:userId/subscriptions | owner, teacher, admin | Listar las suscripciones del usuario |
+| GET    | /user/                      | admin, teacher        | Listar todos los usuarixs            |
+| POST   | /user/                      | teacher, admin        | Crear un nuevo usuarix               |
+| GET    | /user/:userId               | owner, teacher, admin | Obtener usuarix por ID               |
+| PUT    | /user/:userId               | owner, teacher, admin | Actualizar un usuarix                |
+| DELETE | /user/:userId               | owner, teacher, admin | Eliminar un usuarix                  |
+| GET    | /user/:userId/courses       | owner, teacher, admin | Listar los cursos del usuarix        |
+| GET    | /user/:userId/subscriptions | owner, teacher, admin | Listar las suscripciones del usuarix |
 
 <br>
 
@@ -179,10 +179,10 @@ npm run dev
 
 | Method | Endpoint                       | Credentials             | Description                              |
 | ------ | ------------------------------ | ----------------------- | ---------------------------------------- |
-| GET    | /subscription/user/:userId     | student, teacher, admin | Listar las suscripciones de un usuario   |
-| GET    | /subscription/course/:courseId | student, teacher, admin | Listar los usuarios suscritos a un curso |
-| POST   | /subscription/                 | student, teacher, admin | Suscribir a un usuario a un curso        |
-| DELETE | /subscription/                 | student, teacher, admin | Desuscribir a un usuario de un curso     |
+| GET    | /subscription/user/:userId     | student, teacher, admin | Listar las suscripciones de un usuarix   |
+| GET    | /subscription/course/:courseId | student, teacher, admin | Listar los usuarixs suscritos a un curso |
+| POST   | /subscription/                 | student, teacher, admin | Suscribir a un usuarix a un curso        |
+| DELETE | /subscription/                 | student, teacher, admin | Desuscribir a un usuarix de un curso     |
 
 <br>
 
