@@ -179,8 +179,8 @@ npm run dev
 
 | Method | Endpoint                       | Credentials             | Description                              |
 | ------ | ------------------------------ | ----------------------- | ---------------------------------------- |
-| GET    | /subscription/user/:userId     | owner, teacher, admin   | Listar las suscripciones de un usuario   |
-| GET    | /subscription/course/:courseId | teacher, admin          | Listar los usuarios suscritos a un curso |
+| GET    | /subscription/user/:userId     | student, teacher, admin | Listar las suscripciones de un usuario   |
+| GET    | /subscription/course/:courseId | student, teacher, admin | Listar los usuarios suscritos a un curso |
 | POST   | /subscription/                 | student, teacher, admin | Suscribir a un usuario a un curso        |
 | DELETE | /subscription/                 | student, teacher, admin | Desuscribir a un usuario de un curso     |
 

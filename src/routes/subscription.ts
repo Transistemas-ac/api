@@ -11,12 +11,12 @@ const router = Router();
 
 router.get(
   "/user/:userId",
-  verifyCredentials(["owner", "teacher", "admin"]),
+  verifyCredentials(["student", "teacher", "admin"]),
   getSubscriptionsByUserId
 );
 router.get(
   "/course/:courseId",
-  verifyCredentials(["teacher", "admin"]),
+  verifyCredentials(["student", "teacher", "admin"]),
   getSubscriptionsByCourseId
 );
 router.post("/", verifyCredentials(["student", "teacher", "admin"]), subscribe);
