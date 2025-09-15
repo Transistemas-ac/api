@@ -4,6 +4,24 @@ REST API para autenticar y gestionar miembrxs de Transistemas.
 
 <br>
 
+## 🚀 Stack Tecnológico
+
+| Technología  | Versión          |
+| ------------ | ---------------- |
+| Node.js      | 22.14            |
+| Express.js   | ^5.1.0           |
+| TypeScript   | ^5.8.3           |
+| Prisma       | ^6.12.0          |
+| PostgreSQL   | Managed Supabase |
+| Zod          | ^4.0.5           |
+| bcrypt       | ^6.0.0           |
+| jsonwebtoken | ^9.0.2           |
+| cors         | ^2.8.5           |
+| node-fetch   | ^3.3.2           |
+| ts-node-dev  | ^2.0.0           |
+
+<br>
+
 ## 💾 Instalación
 
 ```sh
@@ -34,36 +52,42 @@ npm run dev
 
 <br>
 
-## 🚀 Tech Stack
+## 🚥 Logs
 
-| Technology   | Version          |
-| ------------ | ---------------- |
-| Node.js      | 22.14            |
-| Express.js   | ^5.1.0           |
-| TypeScript   | ^5.8.3           |
-| Prisma       | ^6.12.0          |
-| PostgreSQL   | Managed Supabase |
-| Zod          | ^4.0.5           |
-| bcrypt       | ^6.0.0           |
-| jsonwebtoken | ^9.0.2           |
-| cors         | ^2.8.5           |
-| node-fetch   | ^3.3.2           |
-| ts-node-dev  | ^2.0.0           |
+- `⚙️ Conectando a la base de datos (intento x/3)...`
+- `📁 Base de datos conectada`
+- `❌ Error al conectar a la base de datos`
+
+<br>
+
+- `🚀 El servidor se está ejecutando en el puerto ${port}`
+- `❌ Error al iniciar el servidor en el puerto ${port}`
+
+<br>
+
+- `💚 Auto-ping exitoso`
+- `❌ Auto-ping fallido`
+
+<br>
+
+- Todos los errores pasan por el middleware `errorHandler`.
+- Zod validation errors retornan con status 400 y un array de mensajes.
+- Prisma errors como P2025 (registro no encontrado) se manejan individualmente en cada controlador.
+- Otros errores retornan status 500 con mensaje y stack en consola.
 
 <br>
 
 ## 👩🏻‍💻 Scripts
 
-| Script                      | Description                                 |
-| --------------------------- | ------------------------------------------- |
-| \`npm run dev\`             | Start dev server with ts-node-dev           |
-| \`npm run build\`           | Generate Prisma client + compile TypeScript |
-| \`npm run start\`           | Run compiled server                         |
-| \`npm run test\`            | Run tests with Jest                         |
-| \`npm run prisma:generate\` | Generate Prisma client                      |
-| \`npm run prisma:migrate\`  | Apply migrations in dev                     |
-| \`npm run prisma:reset\`    | Reset database                              |
-| \`npm run prisma:deploy\`   | Deploy migrations to production             |
+| Script                    | Descripción                                     |
+| ------------------------- | ----------------------------------------------- |
+| `npm run dev`             | Iniciar servidor de desarrollo con ts-node-dev  |
+| `npm run build`           | Generar cliente de Prisma + compilar TypeScript |
+| `npm run start`           | Ejecutar servidor compilado                     |
+| `npm run prisma:generate` | Generar cliente de Prisma                       |
+| `npm run prisma:migrate`  | Aplicar migraciones en desarrollo               |
+| `npm run prisma:reset`    | Reiniciar base de datos                         |
+| `npm run prisma:deploy`   | Desplegar migraciones a producción              |
 
 <br>
 
@@ -80,8 +104,6 @@ npm run dev
 <br>
 
 ## 💾 Base de Datos
-
-<br>
 
 ### Enums
 
@@ -193,31 +215,6 @@ npm run dev
 
 <br>
 
-## 🚥 Logs
-
-- `⚙️ Connecting to database (attempt x/3)...`
-- `📁 Database connected`
-- `❌ Failed to connect to database`
-
-<br>
-
-- `🚀 App is running on port ${port}`
-- `❌ Failed to start server at ${port}`
-
-<br>
-
-- `💚 Self-ping successful`
-- `❌ Self-ping failed`
-
-<br>
-
-- Todos los errores pasan por el middleware `errorHandler`.
-- Zod validation errors retornan con status 400 y un array de mensajes.
-- Prisma errors como P2025 (registro no encontrado) se manejan individualmente en cada controlador.
-- Otros errores retornan status 500 con mensaje y stack en consola.
-
-<br>
-
 ---
 
-_Creado con orgullo por el Equipo de Desarrollo de Transistemas ❤_
+_🌈 Creado con orgullo por el Equipo de Desarrollo de Transistemas ❤_

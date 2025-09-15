@@ -35,10 +35,10 @@ connectDB().then(() => {
   const port = Number(process.env.PORT) || 3000;
   try {
     app.listen(port, "0.0.0.0", () => {
-      console.log(`🚀 App is running on port ${port}`);
+      console.log(`🚀 El servidor se está ejecutando en el puerto ${port}`);
     });
   } catch (err) {
-    console.error(`❌ Failed to start server at ${port}`, err);
+    console.error(`❌ Error al iniciar el servidor en el puerto ${port}`, err);
     process.exit(1);
   }
 });

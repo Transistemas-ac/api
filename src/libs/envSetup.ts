@@ -11,7 +11,7 @@ if (process.env.NODE_ENV === "production") {
   console.log("🚀 Starting self-ping loop...");
   setInterval(() => {
     fetch(`${process.env.SELF_URL}`)
-      .then(() => console.log("💚 Self-ping successful"))
-      .catch((err) => console.error("❌ Self-ping failed", err));
+      .then(() => console.log("💚 Auto-ping exitoso"))
+      .catch((err) => console.error("❌ Auto-ping fallido", err));
   }, 30000); // 30 seconds
 }
