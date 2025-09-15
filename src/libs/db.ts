@@ -11,7 +11,7 @@ export const connectDB = () => {
         await prisma.$connect();
         console.log(`📁 Database connected`);
       } catch (err) {
-        console.error(`🔴 Database connection error`, err);
+        console.error(`❌ Failed to connect to database`, err);
         retry(err);
       }
     },

@@ -137,8 +137,6 @@ npm run dev
 
 ## 🛠️ Endpoints
 
-## 🛠️ Endpoints
-
 ### Auth
 
 | Method | Endpoint  | Credentials | Description                           |
@@ -195,15 +193,28 @@ npm run dev
 
 <br>
 
-## ❌ Logs de Errores
+## 🚥 Logs
+
+- `⚙️ Connecting to database (attempt x/3)...`
+- `📁 Database connected`
+- `❌ Failed to connect to database`
+
+<br>
+
+- `🚀 App is running on port ${port}`
+- `❌ Failed to start server at ${port}`
+
+<br>
+
+- `💚 Self-ping successful`
+- `❌ Self-ping failed`
+
+<br>
 
 - Todos los errores pasan por el middleware `errorHandler`.
 - Zod validation errors retornan con status 400 y un array de mensajes.
 - Prisma errors como P2025 (registro no encontrado) se manejan individualmente en cada controlador.
 - Otros errores retornan status 500 con mensaje y stack en consola.
-- Self-ping logs:
-  - \`💚 Self-ping successful\` si la app responde correctamente.
-  - \`❌ Self-ping failed\` si hay error en el ping.
 
 <br>
 
