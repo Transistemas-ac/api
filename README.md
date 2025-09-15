@@ -4,24 +4,6 @@ REST API para autenticar y gestionar miembrxs de Transistemas.
 
 <br>
 
-## 🚀 Stack Tecnológico
-
-| Technología  | Versión          |
-| ------------ | ---------------- |
-| Node.js      | 22.14            |
-| Express.js   | ^5.1.0           |
-| TypeScript   | ^5.8.3           |
-| Prisma       | ^6.12.0          |
-| PostgreSQL   | Managed Supabase |
-| Zod          | ^4.0.5           |
-| bcrypt       | ^6.0.0           |
-| jsonwebtoken | ^9.0.2           |
-| cors         | ^2.8.5           |
-| node-fetch   | ^3.3.2           |
-| ts-node-dev  | ^2.0.0           |
-
-<br>
-
 ## 💾 Instalación
 
 ```sh
@@ -77,6 +59,24 @@ npm run dev
 
 <br>
 
+## 🚀 Tech Stack
+
+| Technología  | Versión          |
+| ------------ | ---------------- |
+| Node.js      | 22.14            |
+| Express.js   | ^5.1.0           |
+| TypeScript   | ^5.8.3           |
+| Prisma       | ^6.12.0          |
+| PostgreSQL   | Managed Supabase |
+| Zod          | ^4.0.5           |
+| bcrypt       | ^6.0.0           |
+| jsonwebtoken | ^9.0.2           |
+| cors         | ^2.8.5           |
+| node-fetch   | ^3.3.2           |
+| ts-node-dev  | ^2.0.0           |
+
+<br>
+
 ## 👩🏻‍💻 Scripts
 
 | Script                    | Descripción                                     |
@@ -93,13 +93,13 @@ npm run dev
 
 ## 🔐️ Variables de Entorno
 
-| Variable   | Description                           | Example                             |
-| ---------- | ------------------------------------- | ----------------------------------- |
-| NODE_ENV   | Environment mode                      | development                         |
-| PORT       | API server port                       | 3000                                |
-| JWT_SECRET | Secret for signing JWT tokens         | "+V:E}Wz>M~B?Ew"                    |
-| DB_URL     | Connection string to PostgreSQL DB    | postgresql://user:pass@host:5432/db |
-| SELF_URL   | URL for self-ping / Render keep-alive | http://localhost:3000               |
+| Variable   | Descripción                                      | Ejemplo                                     |
+| ---------- | ------------------------------------------------ | ------------------------------------------- |
+| NODE_ENV   | Tipo de entorno                                  | development                                 |
+| PORT       | Puerto del servidor                              | 3000                                        |
+| JWT_SECRET | Secreto para firmar tokens JWT                   | "+V:E}Wz>M~B?Ew"                            |
+| DB_URL     | Cadena de conexión a la base de datos PostgreSQL | postgresql://user:pass@host:5432/db         |
+| SELF_URL   | URL para auto-ping / mantener la app activa      | http://localhost:3000                       |
 
 <br>
 
