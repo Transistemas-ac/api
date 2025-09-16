@@ -2,15 +2,22 @@ import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
 import prisma from "../libs/prisma";
 
-type Role = "admin" | "teacher" | "student" | "owner";
+type Credentials = "teacher" | "student" | "owner";
 
-export function verifyCredentials(role: Role | Role[]) {
+export function verifyCredentials(credentials: Credentials | Credentials[]) {
   return async (req: Request, res: Response, next: NextFunction) => {
+    // Obtener header de autorización
     const authHeader = req.headers.authorization;
-    if (!authHeader) return res.status(401).json("❌ No token provided");
+    if (!authHeader) {
+      return res.status(401).json("❌ No token provided");
+    }
 
+    // Intentamos extraer el token (asume formato "Bearer <token>" o similar).
+    // Si no hay segunda parte, token será undefined y jwt.verify fallará y caerá en el catch.
     const token = authHeader.split(" ")[1];
+
     try {
+      // --- Verificar y decodificar JWT ---
       const secret = process.env.JWT_SECRET as string;
       const decoded = jwt.verify(token, secret) as {
         id: number;
@@ -18,19 +25,28 @@ export function verifyCredentials(role: Role | Role[]) {
         credentials: string;
       };
 
+      // --- Buscar usuario en DB por id del token ---
       const user = await prisma.user.findUnique({
         where: { id: Number(decoded.id) },
       });
-      if (!user) return res.status(401).json("❌ User not found");
 
-      const allowedRoles = Array.isArray(role) ? role : [role];
+      // Si no se encuentra el usuario, respondemos con 401
+      if (!user) {
+        return res.status(401).json("❌ User not found");
+      }
 
-      // EARLY RETURN FOR ADMIN / TEACHER
+      // --- Normalizar allowedCredentials en arreglo ---
+      const allowedCredentials = Array.isArray(credentials)
+        ? credentials
+        : [credentials];
+
+      // --- Caso especial: si se permite "teacher" y el usuario es teacher otorgamos acceso inmediato ---
       if (
-        (allowedRoles.includes("admin") && user.credentials === "admin") ||
-        (allowedRoles.includes("teacher") && user.credentials === "teacher")
+        allowedCredentials.includes("teacher") &&
+        user.credentials === "teacher"
       ) {
-        req.user = {
+        // Adjuntamos los datos mínimos al request para uso posterior
+        (req as any).user = {
           id: user.id,
           username: user.username,
           credentials: user.credentials,
@@ -40,37 +56,38 @@ export function verifyCredentials(role: Role | Role[]) {
         return next();
       }
 
+      // --- Obtener suscripciones del usuario (lista de course_id) ---
       const subs = await prisma.subscription.findMany({
         where: { user_id: user.id },
         select: { course_id: true },
       });
 
-      req.user = {
+      // Adjuntamos la info del usuario al request
+      (req as any).user = {
         id: user.id,
         username: user.username,
         credentials: user.credentials,
-        courses: subs.map((s) => s.course_id),
+        courses: subs.map((s) => s.course_id), // cursos: sólo ids
         subscriptions: subs,
       };
 
+      // --- Preparar variables para validaciones ---
       const userId = user.id;
-      const targetUserIdRaw =
-        req.params.userId ?? req.body.userId ?? req.query.userId;
-      const targetUserId = targetUserIdRaw
-        ? Number(targetUserIdRaw)
-        : undefined;
+      const targetUserId = req.params.userId
+        ? Number(req.params.userId)
+        : req.body.userId;
+      const courseId = req.params.courseId
+        ? Number(req.params.courseId)
+        : req.body.courseId;
 
-      const getCourseId = () => {
-        const raw =
-          req.params?.courseId ?? req.body?.courseId ?? req.query?.courseId;
-        return raw ? Number(raw) : undefined;
-      };
-      const courseId = getCourseId();
-
-      for (const allowedRole of allowedRoles) {
-        if (allowedRole === "student" && user.credentials === "student") {
+      // --- Comprobaciones por cada credential permitida ---
+      for (const credential of allowedCredentials) {
+        // Reglas para "student"
+        if (credential === "student" && user.credentials === "student") {
+          // Caso especial: suscribirse a curso (POST /subscription)
           if (req.baseUrl.includes("/subscription") && req.method === "POST") {
             const targetUserIdPost = req.body.userId;
+            // Confirmar que el usuarix se inscribe a sí mismx
             if (!targetUserIdPost || Number(targetUserIdPost) !== user.id) {
               return res
                 .status(403)
@@ -78,11 +95,14 @@ export function verifyCredentials(role: Role | Role[]) {
             }
             return next();
           }
+
+          // Caso especial: desuscribirse (DELETE /subscription)
           if (
             req.baseUrl.includes("/subscription") &&
             req.method === "DELETE"
           ) {
             const targetUserIdDelete = req.body.userId;
+            // Confirmar que el usuarix se desuscribe a sí mismx
             if (!targetUserIdDelete || Number(targetUserIdDelete) !== user.id) {
               return res
                 .status(403)
@@ -90,14 +110,23 @@ export function verifyCredentials(role: Role | Role[]) {
             }
             return next();
           }
-          if (courseId !== undefined && req.user.courses.includes(courseId)) {
+
+          // Si se proporciona courseId, comprobar que el usuarix esté suscripto
+          if (
+            courseId !== undefined &&
+            (req as any).user.courses.includes(courseId)
+          ) {
             return next();
           }
+
+          // Permitir acceso si no hay courseId ni targetUserId en la petición
           if (!courseId && !targetUserId) return next();
         }
 
+        // Reglas para "owner"
+        // Si credential es owner y el usuarix es el propio targetUserId => ok
         if (
-          allowedRole === "owner" &&
+          credential === "owner" &&
           targetUserId !== undefined &&
           userId === targetUserId
         ) {
@@ -105,20 +134,26 @@ export function verifyCredentials(role: Role | Role[]) {
         }
       }
 
+      // --- Manejo de errores / casos donde student intenta acceder a cursos no autorizados ---
       if (user.credentials === "student") {
         if (courseId !== undefined) {
           return res
             .status(403)
             .json("❌ Forbidden: Not enrolled in the course");
         }
+
         if (req.baseUrl.includes("/subscription")) {
+          // Intentamos recuperar courseId desde params, body o query
           const subCourseIdRaw =
             req.params.courseId ?? req.body.courseId ?? req.query.courseId;
+
           if (subCourseIdRaw) {
             return res
               .status(403)
               .json("❌ Forbidden: Not enrolled in the course");
           }
+
+          // Si no hay courseId y el método es GET, retornamos Bad Request
           if (!subCourseIdRaw && req.method === "GET") {
             return res
               .status(400)
@@ -127,8 +162,10 @@ export function verifyCredentials(role: Role | Role[]) {
         }
       }
 
+      // --- Si ninguna condición anterior permitió el acceso, denegamos ---
       return res.status(403).json("Forbidden");
     } catch (err) {
+      // Log detallado para depuración
       console.error("❌ JWT verification error:", err);
       return res.status(401).json("❌ Invalid token");
     }

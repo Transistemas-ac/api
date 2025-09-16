@@ -93,13 +93,13 @@ npm run dev
 
 ## 🔐️ Variables de Entorno
 
-| Variable   | Descripción                                      | Ejemplo                                     |
-| ---------- | ------------------------------------------------ | ------------------------------------------- |
-| NODE_ENV   | Tipo de entorno                                  | development                                 |
-| PORT       | Puerto del servidor                              | 3000                                        |
-| JWT_SECRET | Secreto para firmar tokens JWT                   | "+V:E}Wz>M~B?Ew"                            |
-| DB_URL     | Cadena de conexión a la base de datos PostgreSQL | postgresql://user:pass@host:5432/db         |
-| SELF_URL   | URL para auto-ping / mantener la app activa      | http://localhost:3000                       |
+| Variable   | Descripción                                      | Ejemplo                             |
+| ---------- | ------------------------------------------------ | ----------------------------------- |
+| NODE_ENV   | Tipo de entorno                                  | development                         |
+| PORT       | Puerto del servidor                              | 3000                                |
+| JWT_SECRET | Secreto para firmar tokens JWT                   | "+V:E}Wz>M~B?Ew"                    |
+| DB_URL     | Cadena de conexión a la base de datos PostgreSQL | postgresql://user:pass@host:5432/db |
+| SELF_URL   | URL para auto-ping / mantener la app activa      | http://localhost:3000               |
 
 <br>
 
@@ -159,6 +159,16 @@ npm run dev
 
 ## 🛠️ Endpoints
 
+### General
+
+| Method | Endpoint   | Credentials | Description                              |
+| ------ | ---------- | ----------- | ---------------------------------------- |
+| GET    | `/`        | public      | Mensaje de bienvenida de la API          |
+| GET    | `/healthz` | public      | Verificación de salud (devuelve 💚)      |
+| GET    | `/metrics` | public      | Devuelve las métricas de la organización |
+
+<br>
+
 ### Auth
 
 | Method | Endpoint  | Credentials | Description                           |
@@ -171,47 +181,38 @@ npm run dev
 
 ### User
 
-| Method | Endpoint                    | Credentials           | Description                          |
-| ------ | --------------------------- | --------------------- | ------------------------------------ |
-| GET    | /user/                      | admin, teacher        | Listar todos los usuarixs            |
-| POST   | /user/                      | teacher, admin        | Crear un nuevo usuarix               |
-| GET    | /user/:userId               | owner, teacher, admin | Obtener usuarix por ID               |
-| PUT    | /user/:userId               | owner, teacher, admin | Actualizar un usuarix                |
-| DELETE | /user/:userId               | owner, teacher, admin | Eliminar un usuarix                  |
-| GET    | /user/:userId/courses       | owner, teacher, admin | Listar los cursos del usuarix        |
-| GET    | /user/:userId/subscriptions | owner, teacher, admin | Listar las suscripciones del usuarix |
+| Method | Endpoint                    | Credentials    | Description                          |
+| ------ | --------------------------- | -------------- | ------------------------------------ |
+| GET    | /user/                      | teacher        | Listar todos los usuarixs            |
+| POST   | /user/                      | teacher        | Crear un nuevo usuarix               |
+| GET    | /user/:userId               | teacher, owner | Obtener usuarix por ID               |
+| PUT    | /user/:userId               | teacher, owner | Actualizar un usuarix                |
+| DELETE | /user/:userId               | teacher, owner | Eliminar un usuarix                  |
+| GET    | /user/:userId/courses       | teacher, owner | Listar los cursos del usuarix        |
+| GET    | /user/:userId/subscriptions | teacher, owner | Listar las suscripciones del usuarix |
 
 <br>
 
 ### Course
 
-| Method | Endpoint          | Credentials    | Description             |
-| ------ | ----------------- | -------------- | ----------------------- |
-| GET    | /course/          | public         | Listar todos los cursos |
-| GET    | /course/:courseId | public         | Obtener curso por ID    |
-| POST   | /course/          | teacher, admin | Crear un nuevo curso    |
-| PUT    | /course/:courseId | teacher, admin | Actualizar un curso     |
-| DELETE | /course/:courseId | teacher, admin | Eliminar un curso       |
+| Method | Endpoint          | Credentials | Description             |
+| ------ | ----------------- | ----------- | ----------------------- |
+| GET    | /course/          | public      | Listar todos los cursos |
+| GET    | /course/:courseId | public      | Obtener curso por ID    |
+| POST   | /course/          | teacher     | Crear un nuevo curso    |
+| PUT    | /course/:courseId | teacher     | Actualizar un curso     |
+| DELETE | /course/:courseId | teacher     | Eliminar un curso       |
 
 <br>
 
 ### Subscription
 
-| Method | Endpoint                       | Credentials             | Description                              |
-| ------ | ------------------------------ | ----------------------- | ---------------------------------------- |
-| GET    | /subscription/user/:userId     | student, teacher, admin | Listar las suscripciones de un usuarix   |
-| GET    | /subscription/course/:courseId | student, teacher, admin | Listar los usuarixs suscritos a un curso |
-| POST   | /subscription/                 | student, teacher, admin | Suscribir a un usuarix a un curso        |
-| DELETE | /subscription/                 | student, teacher, admin | Desuscribir a un usuarix de un curso     |
-
-<br>
-
-### Health and root
-
-| Method | Endpoint   | Credentials | Description                         |
-| ------ | ---------- | ----------- | ----------------------------------- |
-| GET    | `/`        | public      | Mensaje de bienvenida de la API     |
-| GET    | `/healthz` | public      | Verificación de salud (devuelve 💚) |
+| Method | Endpoint                       | Credentials      | Description                              |
+| ------ | ------------------------------ | ---------------- | ---------------------------------------- |
+| GET    | /subscription/user/:userId     | teacher, student | Listar las suscripciones de un usuarix   |
+| GET    | /subscription/course/:courseId | teacher, student | Listar los usuarixs suscritos a un curso |
+| POST   | /subscription/                 | teacher, student | Suscribir a un usuarix a un curso        |
+| DELETE | /subscription/                 | teacher, student | Desuscribir a un usuarix de un curso     |
 
 <br>
 

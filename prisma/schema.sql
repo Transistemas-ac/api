@@ -1,5 +1,5 @@
 -- Enums
-CREATE TYPE "CredentialsType" AS ENUM ('admin', 'teacher', 'student');
+CREATE TYPE "CredentialsType" AS ENUM ('teacher', 'student');
 
 -- User table
 CREATE TABLE "User" (

@@ -11,25 +11,23 @@ import { verifyCredentials } from "../middlewares/verifyCredentials";
 
 const router = Router();
 
-router.get("/", getCourses);
-router.get("/:courseId", getCourseById);
-router.post(
-  "/",
-  verifyAuth,
-  verifyCredentials(["teacher", "admin"]),
-  createCourse
-);
+router.post("/", verifyAuth, verifyCredentials(["teacher"]), createCourse);
+
 router.put(
   "/:courseId",
   verifyAuth,
-  verifyCredentials(["teacher", "admin"]),
+  verifyCredentials(["teacher"]),
   updateCourse
 );
+
 router.delete(
   "/:courseId",
   verifyAuth,
-  verifyCredentials(["teacher", "admin"]),
+  verifyCredentials(["teacher"]),
   deleteCourse
 );
+
+router.get("/", getCourses);
+router.get("/:courseId", getCourseById);
 
 export default router;

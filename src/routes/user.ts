@@ -12,33 +12,23 @@ import { verifyCredentials } from "../middlewares/verifyCredentials";
 
 const router = Router();
 
+router.post("/", verifyCredentials(["teacher"]), createUser);
+
+router.put("/:userId", verifyCredentials(["owner", "teacher"]), updateUser);
+
+router.delete("/:userId", verifyCredentials(["owner", "teacher"]), deleteUser);
+
 router.get("/", verifyCredentials(["admin", "teacher"]), getUsers);
-router.get(
-  "/:userId",
-  verifyCredentials(["owner", "teacher", "admin"]),
-  getUserById
-);
+router.get("/:userId", verifyCredentials(["owner", "teacher"]), getUserById);
 router.get(
   "/:userId/courses",
-  verifyCredentials(["owner", "teacher", "admin"]),
+  verifyCredentials(["owner", "teacher"]),
   getUserCourses
 );
 router.get(
   "/:userId/subscriptions",
-  verifyCredentials(["owner", "teacher", "admin"]),
+  verifyCredentials(["owner", "teacher"]),
   getUserSubscriptions
-);
-
-router.post("/", verifyCredentials(["teacher", "admin"]), createUser);
-router.put(
-  "/:userId",
-  verifyCredentials(["owner", "teacher", "admin"]),
-  updateUser
-);
-router.delete(
-  "/:userId",
-  verifyCredentials(["owner", "teacher", "admin"]),
-  deleteUser
 );
 
 export default router;

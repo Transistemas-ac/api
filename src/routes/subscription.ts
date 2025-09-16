@@ -9,21 +9,21 @@ import { verifyCredentials } from "../middlewares/verifyCredentials";
 
 const router = Router();
 
+router.post("/", verifyCredentials(["student", "teacher"]), subscribe);
+
+// router.put("/", verifyCredentials(["student", "teacher"]), updateSubscription);
+
+router.delete("/", verifyCredentials(["student", "teacher"]), unsubscribe);
+
 router.get(
   "/user/:userId",
-  verifyCredentials(["student", "teacher", "admin"]),
+  verifyCredentials(["student", "teacher"]),
   getSubscriptionsByUserId
 );
 router.get(
   "/course/:courseId",
-  verifyCredentials(["student", "teacher", "admin"]),
+  verifyCredentials(["student", "teacher"]),
   getSubscriptionsByCourseId
-);
-router.post("/", verifyCredentials(["student", "teacher", "admin"]), subscribe);
-router.delete(
-  "/",
-  verifyCredentials(["student", "teacher", "admin"]),
-  unsubscribe
 );
 
 export default router;
