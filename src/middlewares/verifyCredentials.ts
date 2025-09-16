@@ -12,8 +12,7 @@ export function verifyCredentials(credentials: Credentials | Credentials[]) {
       return res.status(401).json("❌ No token provided");
     }
 
-    // Intentamos extraer el token (asume formato "Bearer <token>" o similar).
-    // Si no hay segunda parte, token será undefined y jwt.verify fallará y caerá en el catch.
+    // Extraer token del header
     const token = authHeader.split(" ")[1];
 
     try {
@@ -25,12 +24,12 @@ export function verifyCredentials(credentials: Credentials | Credentials[]) {
         credentials: string;
       };
 
-      // --- Buscar usuario en DB por id del token ---
+      // --- Buscar usuarix en DB por id del token ---
       const user = await prisma.user.findUnique({
         where: { id: Number(decoded.id) },
       });
 
-      // Si no se encuentra el usuario, respondemos con 401
+      // Si no se encuentra el usuarix, respondemos con 401
       if (!user) {
         return res.status(401).json("❌ User not found");
       }
@@ -40,7 +39,7 @@ export function verifyCredentials(credentials: Credentials | Credentials[]) {
         ? credentials
         : [credentials];
 
-      // --- Caso especial: si se permite "teacher" y el usuario es teacher otorgamos acceso inmediato ---
+      // --- Caso especial: si se permite "teacher" y el usuarix es teacher otorgamos acceso inmediato ---
       if (
         allowedCredentials.includes("teacher") &&
         user.credentials === "teacher"
@@ -56,13 +55,13 @@ export function verifyCredentials(credentials: Credentials | Credentials[]) {
         return next();
       }
 
-      // --- Obtener suscripciones del usuario (lista de course_id) ---
+      // --- Obtener suscripciones del usuarix (lista de course_id) ---
       const subs = await prisma.subscription.findMany({
         where: { user_id: user.id },
         select: { course_id: true },
       });
 
-      // Adjuntamos la info del usuario al request
+      // Adjuntamos la info del usuarix al request
       (req as any).user = {
         id: user.id,
         username: user.username,
