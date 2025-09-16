@@ -1,7 +1,7 @@
 import "./libs/envSetup";
 import express from "express";
 import cors from "cors";
-import authRoutes from "./routes/auth";
+import publicRoutes from "./routes/public";
 import userRoutes from "./routes/user";
 import courseRoutes from "./routes/course";
 import subscriptionRoutes from "./routes/subscription";
@@ -16,16 +16,10 @@ app.use(express.json());
 app.use(cors({ origin: "*" }));
 
 //🚦 Define routes
-app.use("/", authRoutes);
+app.use("/", publicRoutes);
 app.use("/user", verifyAuth, userRoutes);
 app.use("/course", courseRoutes);
 app.use("/subscription", verifyAuth, subscriptionRoutes);
-app.get("/", (req, res) => {
-  res.status(200).json({ message: "🏳️‍🌈 Transistemas API 🏳️‍⚧️" });
-});
-app.get("/healthz", (req, res) => {
-  res.status(200).json({ message: "💚" });
-});
 
 //❗ Error handler (must be last)
 app.use(errorHandler);
