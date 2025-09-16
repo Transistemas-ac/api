@@ -20,9 +20,7 @@ app.use("/", publicRoutes);
 app.use("/user", verifyAuth, userRoutes);
 app.use("/course", courseRoutes);
 app.use("/subscription", verifyAuth, subscriptionRoutes);
-
-//❗ Error handler (must be last)
-app.use(errorHandler);
+app.use(errorHandler); //❗ (must be last)
 
 //🚀 Start server after DB connection
 connectDB().then(() => {

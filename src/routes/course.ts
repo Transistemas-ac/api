@@ -27,6 +27,7 @@ router.delete(
   deleteCourse
 );
 
+// Get routes are public
 router.get("/", getCourses);
 router.get("/:courseId", getCourseById);
 
