@@ -107,9 +107,9 @@ npm run dev
 
 ### Enums
 
-| Enum            | Values                        |
-| --------------- | ----------------------------- |
-| CredentialsType | "admin", "teacher", "student" |
+| Enum            | Values               |
+| --------------- | -------------------- |
+| CredentialsType | "teacher", "student" |
 
 <br>
 
@@ -158,6 +158,9 @@ npm run dev
 <br>
 
 ## 🛠️ Endpoints
+
+- `public` incluye usuarixs no registradxs
+- `owner` es un `student` accediendo a su propia data
 
 ### General
 
