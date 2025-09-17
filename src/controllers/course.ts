@@ -8,7 +8,19 @@ export const getCourses = asyncHandler(async (_req: Request, res: Response) => {
     include: { subscriptions: { include: { user: true } } },
   });
   if (!courses) throw new HttpError(404, "❌ No courses found");
-  res.status(200).json(courses);
+
+  const safeCourses = courses.map((course) => ({
+    ...course,
+    subscriptions: course.subscriptions.map((s) => {
+      if (s.user && typeof s.user === "object") {
+        const { password, ...userWithoutPassword } = s.user as any;
+        return { ...s, user: userWithoutPassword };
+      }
+      return s;
+    }),
+  }));
+
+  res.status(200).json(safeCourses);
 });
 
 export const getCourseById = asyncHandler(
@@ -19,7 +31,19 @@ export const getCourseById = asyncHandler(
       include: { subscriptions: { include: { user: true } } },
     });
     if (!course) throw new HttpError(404, "❌ Course not found");
-    res.status(200).json(course);
+
+    const safeCourse = {
+      ...course,
+      subscriptions: course.subscriptions.map((s) => {
+        if (s.user && typeof s.user === "object") {
+          const { password, ...userWithoutPassword } = s.user as any;
+          return { ...s, user: userWithoutPassword };
+        }
+        return s;
+      }),
+    };
+
+    res.status(200).json(safeCourse);
   }
 );
 

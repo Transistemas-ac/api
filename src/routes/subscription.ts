@@ -6,24 +6,27 @@ import {
   unsubscribe,
 } from "../controllers/subscription";
 import { verifyCredentials } from "../middlewares/verifyCredentials";
+import { verifyAuth } from "../middlewares/verifyAuth";
 
 const router = Router();
 
-router.post("/", verifyCredentials(["student", "teacher"]), subscribe);
-
-// router.put("/", verifyCredentials(["student", "teacher"]), updateSubscription);
-
-router.delete("/", verifyCredentials(["student", "teacher"]), unsubscribe);
-
-router.get(
-  "/user/:userId",
+router.post(
+  "/",
+  verifyAuth,
   verifyCredentials(["student", "teacher"]),
-  getSubscriptionsByUserId
+  subscribe
 );
-router.get(
-  "/course/:courseId",
+
+// router.put("/", verifyAuth, verifyCredentials(["student", "teacher"]), updateSubscription);
+
+router.delete(
+  "/",
+  verifyAuth,
   verifyCredentials(["student", "teacher"]),
-  getSubscriptionsByCourseId
+  unsubscribe
 );
+
+router.get("/user/:userId", getSubscriptionsByUserId);
+router.get("/course/:courseId", getSubscriptionsByCourseId);
 
 export default router;

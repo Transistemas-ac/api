@@ -40,16 +40,19 @@ export const register = asyncHandler(async (req: Request, res: Response) => {
     data: { username, email, password: hash, credentials },
   });
 
-  console.log("✅ User registered successfully", user);
+  console.log("✅ User registered successfully", {
+    id: user.id,
+    username: user.username,
+    email: user.email,
+    credentials: user.credentials,
+  });
+
+  // omit password
+  const { password: _pw, ...safeUser } = user;
 
   res.status(201).json({
     success: true,
-    user: {
-      id: user.id,
-      username: user.username,
-      email: user.email,
-      credentials: user.credentials,
-    },
+    user: safeUser,
   });
 });
 
@@ -71,17 +74,20 @@ export const login = asyncHandler(async (req: Request, res: Response) => {
     { expiresIn: "7d" }
   );
 
-  console.log("✅ User logged in successfully", user);
+  console.log("✅ User logged in successfully", {
+    id: user.id,
+    username: user.username,
+    email: user.email,
+    credentials: user.credentials,
+  });
+
+  // omit password
+  const { password: _pw, ...safeUser } = user;
 
   res.status(200).json({
     success: true,
     token,
-    user: {
-      id: user.id,
-      username: user.username,
-      email: user.email,
-      credentials: user.credentials,
-    },
+    user: safeUser,
   });
 });
 

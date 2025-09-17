@@ -31,7 +31,16 @@ export const getSubscriptionsByCourseId = asyncHandler(
         .status(404)
         .json({ message: "❌ No subscriptions found for this course" });
     }
-    res.status(200).json(subs.map((s) => s.user));
+
+    const safeUsers = subs.map((s) => {
+      if (s.user && typeof s.user === "object") {
+        const { password, ...userWithoutPassword } = s.user as any;
+        return userWithoutPassword;
+      }
+      return s.user;
+    });
+
+    res.status(200).json(safeUsers);
   }
 );
 

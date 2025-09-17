@@ -11,6 +11,9 @@ import { verifyCredentials } from "../middlewares/verifyCredentials";
 
 const router = Router();
 
+router.get("/", getCourses);
+router.get("/:courseId", getCourseById);
+
 router.post("/", verifyAuth, verifyCredentials(["teacher"]), createCourse);
 
 router.put(
@@ -26,9 +29,5 @@ router.delete(
   verifyCredentials(["teacher"]),
   deleteCourse
 );
-
-// Get routes are public
-router.get("/", getCourses);
-router.get("/:courseId", getCourseById);
 
 export default router;
