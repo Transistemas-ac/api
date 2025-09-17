@@ -8,27 +8,30 @@ import {
   getUserCourses,
   getUserSubscriptions,
 } from "../controllers/user";
+import { verifyAuth } from "../middlewares/verifyAuth";
 import { verifyCredentials } from "../middlewares/verifyCredentials";
 
 const router = Router();
 
-router.post("/", verifyCredentials(["teacher"]), createUser);
-
-router.put("/:userId", verifyCredentials(["owner", "teacher"]), updateUser);
-
-router.delete("/:userId", verifyCredentials(["owner", "teacher"]), deleteUser);
-
 router.get("/", getUsers);
 router.get("/:userId", getUserById);
-router.get(
-  "/:userId/courses",
+router.get("/:userId/courses", getUserCourses);
+router.get("/:userId/subscriptions", getUserSubscriptions);
+
+router.post("/", verifyAuth, verifyCredentials(["teacher"]), createUser);
+
+router.put(
+  "/:userId",
+  verifyAuth,
   verifyCredentials(["owner", "teacher"]),
-  getUserCourses
+  updateUser
 );
-router.get(
-  "/:userId/subscriptions",
+
+router.delete(
+  "/:userId",
+  verifyAuth,
   verifyCredentials(["owner", "teacher"]),
-  getUserSubscriptions
+  deleteUser
 );
 
 export default router;

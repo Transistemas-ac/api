@@ -17,7 +17,7 @@ app.use(cors({ origin: "*" }));
 
 //🚦 Define routes
 app.use("/", publicRoutes);
-app.use("/user", verifyAuth, userRoutes);
+app.use("/user", userRoutes);
 app.use("/course", courseRoutes);
 app.use("/subscription", verifyAuth, subscriptionRoutes);
 app.use(errorHandler); //❗ (must be last)
