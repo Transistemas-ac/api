@@ -15,7 +15,7 @@ const registrationSchema = z.object({
     .string()
     .min(8)
     .regex(/(?=.*[a-zA-Z])(?=.*\d)/),
-  credentials: z.enum(["admin", "student", "teacher"]).default("student"),
+  credentials: z.enum(["student", "teacher"]).default("student"),
 });
 
 const loginSchema = z.object({
