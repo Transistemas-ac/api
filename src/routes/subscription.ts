@@ -27,7 +27,7 @@ router.delete(
   unsubscribe
 );
 
-router.get("/ ", getSubscriptions);
+router.get("/", getSubscriptions);
 router.get("/user/:userId", getSubscriptionsByUserId);
 router.get("/course/:courseId", getSubscriptionsByCourseId);
 
