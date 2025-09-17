@@ -3,6 +3,16 @@ import { asyncHandler } from "../libs/asyncHandler";
 import { HttpError } from "../libs/HttpError";
 import prisma from "../libs/prisma";
 
+export const getSubscriptions = asyncHandler(
+  async (_req: Request, res: Response) => {
+    const subs = await prisma.subscription.findMany({
+      include: { course: true },
+    });
+    if (!subs.length) throw new HttpError(404, "❌ No subscriptions found");
+    res.status(200).json(subs);
+  }
+);
+
 export const getSubscriptionsByUserId = asyncHandler(
   async (req: Request, res: Response) => {
     const userId = Number(req.params.userId ?? req.params.id);

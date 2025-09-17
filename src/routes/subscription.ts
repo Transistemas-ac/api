@@ -4,6 +4,7 @@ import {
   getSubscriptionsByCourseId,
   subscribe,
   unsubscribe,
+  getSubscriptions,
 } from "../controllers/subscription";
 import { verifyCredentials } from "../middlewares/verifyCredentials";
 import { verifyAuth } from "../middlewares/verifyAuth";
@@ -26,6 +27,7 @@ router.delete(
   unsubscribe
 );
 
+router.get("/ ", getSubscriptions);
 router.get("/user/:userId", getSubscriptionsByUserId);
 router.get("/course/:courseId", getSubscriptionsByCourseId);
 
