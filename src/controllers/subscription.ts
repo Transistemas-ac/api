@@ -6,10 +6,21 @@ import prisma from "../libs/prisma";
 export const getSubscriptions = asyncHandler(
   async (_req: Request, res: Response) => {
     const subs = await prisma.subscription.findMany({
-      include: { course: true },
+      include: {
+        course: true,
+        user: true,
+      },
     });
-    if (!subs.length) throw new HttpError(404, "❌ No subscriptions found");
-    res.status(200).json(subs);
+
+    const safeSubs = subs.map((s) => {
+      if (s.user && typeof s.user === "object") {
+        const { password, ...userWithoutPassword } = s.user as any;
+        return { ...s, user: userWithoutPassword };
+      }
+      return s;
+    });
+
+    res.status(200).json(safeSubs);
   }
 );
 
