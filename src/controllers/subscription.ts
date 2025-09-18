@@ -66,7 +66,7 @@ export const getSubscriptionsByCourseId = asyncHandler(
 );
 
 export const subscribe = asyncHandler(async (req: Request, res: Response) => {
-  const { userId, courseId, role } = req.body;
+  const { userId, courseId, credentials } = req.body;
 
   const course = await prisma.course.findUnique({
     where: { id: Number(courseId) },
@@ -78,7 +78,7 @@ export const subscribe = asyncHandler(async (req: Request, res: Response) => {
       data: {
         user_id: Number(userId),
         course_id: Number(courseId),
-        credentials: role ?? "student",
+        credentials: credentials ?? "student",
       },
     });
     console.log("✅ User enrolled in course", relation);
